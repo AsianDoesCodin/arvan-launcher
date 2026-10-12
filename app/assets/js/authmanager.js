@@ -147,8 +147,10 @@ exports.addMojangAccount = async function(username, password) {
     if(!Arvan.NAME_REGEX.test(name)){
         return Promise.reject({ title: 'Invalid name', desc: 'Use 3-16 letters, numbers or _.' })
     }
-    if(typeof password !== 'string' || password.length < Arvan.PASSWORD_MIN){
-        return Promise.reject({ title: 'Password too short', desc: 'Use at least ' + Arvan.PASSWORD_MIN + ' characters.' })
+    // Any length: older accounts may have a password set in game before the 8-character rule.
+    // New passwords are held to Arvan.PASSWORD_MIN by the login form and by the server.
+    if(typeof password !== 'string' || password.length < 1){
+        return Promise.reject({ title: 'Password missing', desc: 'Enter your password.' })
     }
     const enc = await Arvan.encryptPassword(password)
     if(enc == null){

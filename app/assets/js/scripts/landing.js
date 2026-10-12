@@ -95,7 +95,9 @@ function setDownloadPercentage(percent){
  * @param {boolean} val True to enable, false to disable.
  */
 function setLaunchEnabled(val){
-    document.getElementById('launch_button').disabled = !val
+    // Arvan: the update gate (uicore.js) can hold Play disabled while the launcher is outdated.
+    const gated = typeof arvanUpdateAllowsPlay === 'function' && !arvanUpdateAllowsPlay() && arvanUpdate.state !== 'failed'
+    document.getElementById('launch_button').disabled = !val || gated
 }
 
 // Arvan: one launch at a time. Play is ignored while a launch/update is in progress
@@ -105,11 +107,81 @@ function arvanGameRunning(){
     return proc != null && proc.exitCode === null && proc.signalCode === null
 }
 
+// Arvan: graphics preset selector. <gamedir>/arvan-graphics.json is the single source of truth
+// (the in-game Graphics button writes it too); the pre-launch step applies whatever it says.
+function arvanGraphicsDir(){
+    return path.join(ConfigManager.getInstanceDirectory(), ConfigManager.getSelectedServer() || 'arvan')
+}
+function arvanRefreshGraphics(){
+    const cur = require('./assets/js/arvan').readGraphicsPreset(arvanGraphicsDir())
+    for(const b of document.querySelectorAll('.arvanGfxOpt')){
+        if(b.dataset.gfx === cur) b.setAttribute('selected', '')
+        else b.removeAttribute('selected')
+    }
+}
+for(const b of document.querySelectorAll('.arvanGfxOpt')){
+    b.addEventListener('click', () => {
+        try {
+            require('./assets/js/arvan').writeGraphicsPreset(arvanGraphicsDir(), b.dataset.gfx)
+        } catch(err) {
+            loggerLanding.warn('Could not save the graphics preset', err)
+        }
+        arvanRefreshGraphics()
+        loggerLanding.info('Graphics preset set to ' + b.dataset.gfx)
+    })
+}
+arvanRefreshGraphics()
+// The in-game Graphics button can change the file while the launcher is open.
+window.addEventListener('focus', arvanRefreshGraphics)
+
+// Arvan: Memory dropdown. Writes the same javaConfig maxRAM as the Settings > Java slider (-Xmx).
+function arvanRamToGb(v){
+    const m = /^(\d+(?:\.\d+)?)([GgMm])$/.exec(String(v || ''))
+    if(!m) return null
+    return m[2].toUpperCase() === 'G' ? Number(m[1]) : Number(m[1]) / 1024
+}
+function arvanRefreshMemory(){
+    const sel = document.getElementById('arvanMemory')
+    const serverId = ConfigManager.getSelectedServer()
+    if(sel == null || !serverId) return
+    let cur
+    try { cur = arvanRamToGb(ConfigManager.getMaxRAM(serverId)) } catch(_e) { return } // java config not ready yet
+    const opts = ConfigManager.getArvanMemoryOptions()
+    const list = opts.slice()
+    if(cur != null && !list.includes(cur)) list.push(cur)
+    list.sort((a, b) => a - b)
+    sel.innerHTML = list.map(g => `<option value="${g}">${g} GB${opts.includes(g) ? '' : ' (custom)'}</option>`).join('')
+    if(cur != null) sel.value = String(cur)
+}
+document.getElementById('arvanMemory').addEventListener('change', (e) => {
+    const serverId = ConfigManager.getSelectedServer()
+    const gb = Number(e.target.value)
+    if(!serverId || !(gb > 0)) return
+    ConfigManager.setMaxRAM(serverId, gb + 'G')
+    // Keep -Xms <= -Xmx.
+    const min = arvanRamToGb(ConfigManager.getMinRAM(serverId))
+    if(min != null && min > gb) ConfigManager.setMinRAM(serverId, gb + 'G')
+    ConfigManager.save()
+    loggerLanding.info('Memory set to ' + gb + 'G')
+})
+window.addEventListener('focus', arvanRefreshMemory)
+document.getElementById('arvanMemory').addEventListener('mousedown', arvanRefreshMemory)
+
 // Bind launch button
 document.getElementById('launch_button').addEventListener('click', async e => {
     if(arvanLaunching || arvanGameRunning()){
         loggerLanding.info('Launch ignored: the game is already updating or running.')
         return
+    }
+    // Arvan: never launch from an outdated launcher (re-checks if the last check is > 30 min old).
+    if(typeof arvanEnsureLatest === 'function'){
+        arvanLaunching = true
+        let mayPlay = false
+        try { mayPlay = await arvanEnsureLatest() } finally { arvanLaunching = false }
+        if(!mayPlay){
+            loggerLanding.info('Launch blocked: the launcher is updating or the update failed.')
+            return
+        }
     }
     // Arvan: a stored (encrypted) password is required to play.
     const arvanAcc = ConfigManager.getSelectedAccount()
@@ -201,6 +273,8 @@ function updateSelectedServer(serv){
         animateSettingsTabRefresh()
     }
     setLaunchEnabled(serv != null)
+    if(typeof arvanRefreshMemory === 'function') arvanRefreshMemory()
+    if(typeof arvanRefreshGraphics === 'function') arvanRefreshGraphics()
 }
 // Real text is set in uibinder.js on distributionIndexDone.
 server_selection_button.innerHTML = '&#8226; ' + Lang.queryJS('landing.selectedServer.loading')
@@ -722,6 +796,13 @@ async function dlAsync(login = true) {
  * return to the login screen with a short message.
  */
 function arvanAfterGameExit(gameDir, launchedAt, authUser){
+    // Arvan: an update downloaded while the game ran installs now that it closed.
+    if(typeof arvanUpdate !== 'undefined' && arvanUpdate.state === 'ready-later'){
+        loggerLanding.info('Game closed; installing the downloaded launcher update.')
+        arvanSetUpdateState('installing')
+        setTimeout(() => ipcRenderer.send('autoUpdateAction', 'installUpdateNow'), 800)
+        return
+    }
     try {
         const Arvan = require('./assets/js/arvan')
         const res = Arvan.takeAuthResult(gameDir, launchedAt)

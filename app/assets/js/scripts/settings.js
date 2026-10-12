@@ -332,6 +332,8 @@ function fullSettingsSave() {
 /* Closes the settings view and saves all data. */
 settingsNavDone.onclick = () => {
     fullSettingsSave()
+    // Arvan: the landing Memory dropdown mirrors the Java slider.
+    if(typeof arvanRefreshMemory === 'function') arvanRefreshMemory()
     switchView(getCurrentView(), VIEWS.landing)
 }
 
@@ -349,7 +351,7 @@ document.getElementById('settingsAddMojangAccount').onclick = (e) => {
     if(acc != null){
         AuthManager.clearArvanPassword(acc.uuid)
     }
-    arvanOpenLogin(acc ? acc.displayName : '', 'Logged out. Log in, or create another character.')
+    arvanOpenLogin(acc ? acc.displayName : '', 'Logged out. Log in, or create another account.')
 }
 
 // Bind the add microsoft account button.
@@ -680,6 +682,9 @@ function populateAuthAccounts(){
  */
 function prepareAccountsTab() {
     populateAuthAccounts()
+    // Arvan: the simple panel shows only the current name.
+    const arvanAcc = ConfigManager.getSelectedAccount()
+    document.getElementById('arvanAccountName').textContent = arvanAcc ? arvanAcc.displayName : '-'
     bindAuthAccountSelect()
     bindAuthAccountLogOut()
 }

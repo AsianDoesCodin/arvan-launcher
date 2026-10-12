@@ -22,16 +22,32 @@ const arvanPasswordConfirm  = document.getElementById('arvanPasswordConfirm')
 const arvanConfirmError     = document.getElementById('arvanConfirmError')
 const arvanConfirmContainer = document.getElementById('arvanConfirmContainer')
 const arvanLoginMessage     = document.getElementById('arvanLoginMessage')
-const ARVAN_PW_MIN          = 6
+const ARVAN_PW_MIN          = 8
 
 // Control variables.
 let lu = false, lp = false
 let arvanMode = 'create' // Arvan: 'create' (name, password, confirm) or 'login' (name, password)
 
-/** Arvan: show a message above the form (empty string hides it). */
-function arvanSetLoginMessage(text){
+/**
+ * Arvan: show a message above the form (empty string hides it).
+ * Optional action = { label, onClick } adds a one-click button under the text.
+ */
+function arvanSetLoginMessage(text, action){
     arvanLoginMessage.textContent = text || ''
+    if(text && action){
+        const b = document.createElement('button')
+        b.type = 'button'
+        b.className = 'arvanLoginMessageAction'
+        b.textContent = action.label
+        b.onclick = (e) => { e.preventDefault(); action.onClick() }
+        arvanLoginMessage.appendChild(b)
+    }
     arvanLoginMessage.style.display = text ? 'block' : 'none'
+}
+
+/** Arvan: minimum password length for the current mode. Existing accounts may predate the 8-character rule. */
+function arvanPwMin(){
+    return arvanMode === 'create' ? ARVAN_PW_MIN : 1
 }
 
 /** Arvan: confirm field must match in create mode. */
@@ -55,6 +71,7 @@ function arvanSetMode(mode){
     document.getElementById('arvanModeLogin').classList.toggle('active', mode === 'login')
     arvanConfirmContainer.style.display = mode === 'create' ? '' : 'none'
     if(mode !== 'create') arvanPasswordConfirm.value = ''
+    if(loginPassword.value) validatePassword(loginPassword.value)
     arvanRefreshButton()
 }
 document.getElementById('arvanModeCreate').onclick = () => arvanSetMode('create')
@@ -133,13 +150,13 @@ function validateEmail(value){
  * @param {string} value The password value.
  */
 function validatePassword(value){
-    if(value && value.length >= ARVAN_PW_MIN){
+    if(value && value.length >= arvanPwMin()){
         loginPasswordError.style.opacity = 0
         lp = true
         arvanRefreshButton()
     } else {
         lp = false
-        showError(loginPasswordError, value ? '* At least ' + ARVAN_PW_MIN + ' characters' : Lang.queryJS('login.error.requiredValue'))
+        showError(loginPasswordError, value ? '* At least ' + arvanPwMin() + ' characters' : Lang.queryJS('login.error.requiredValue'))
         loginDisabled(true)
     }
 }
@@ -255,7 +272,47 @@ loginButton.addEventListener('click', () => {
     // Show loading stuff.
     loginLoading(true)
 
-    AuthManager.addMojangAccount(loginUsername.value, loginPassword.value).then((value) => {
+    // Arvan: one server check per click (the form stays disabled while it runs).
+    const arvanName = loginUsername.value
+    const arvanMode0 = arvanMode
+    const Arvan = require('./assets/js/arvan')
+    const arvanGameDir = path.join(ConfigManager.getInstanceDirectory(), ConfigManager.getSelectedServer() || 'arvan')
+    Arvan.checkAccount(arvanGameDir, arvanName, loginPassword.value, arvanMode0, msftLoginLogger).then((check) => {
+        const problem = Arvan.accountCheckMessage(check, arvanMode0)
+        if(problem){
+            msftLoginLogger.info('Account check for ' + arvanName + ': ' + check.result)
+            loginLoading(false)
+            formDisabled(false)
+            if(arvanMode0 === 'create' && check.result === 'name_taken'){
+                // The name already has a password (set in game or earlier): one click to the login tab, name kept.
+                arvanSetLoginMessage(problem, { label: 'Switch to "I have an account"', onClick: () => {
+                    arvanOpenLogin(arvanName, '', 'login')
+                    loginPassword.focus()
+                } })
+                return
+            }
+            arvanSetLoginMessage(problem)
+            if(check.result === 'wrong_password'){
+                loginPassword.value = ''
+                arvanPasswordConfirm.value = ''
+                lp = false
+                loginDisabled(true)
+                loginPassword.focus()
+            }
+            return
+        }
+        return arvanSaveAccount()
+    }).catch((err) => {
+        msftLoginLogger.error('Account check failed.', err && err.message)
+        loginLoading(false)
+        formDisabled(false)
+        arvanSetLoginMessage(Arvan.accountCheckMessage({ result: 'error' }, arvanMode0))
+    })
+})
+
+/** Arvan: store the checked account and continue (the original Helios success flow). */
+function arvanSaveAccount(){
+    return AuthManager.addMojangAccount(loginUsername.value, loginPassword.value).then((value) => {
         try { localStorage.setItem('arvanLastName', value.displayName) } catch(_e) { /* ignore */ }
         updateSelectedAccount(value)
         loginButton.innerHTML = loginButton.innerHTML.replace(Lang.queryJS('login.loggingIn'), Lang.queryJS('login.success'))
@@ -300,8 +357,7 @@ loginButton.addEventListener('click', () => {
         })
         toggleOverlay(true)
     })
-
-})
+}
 
 // Arvan: remember the last name; returning players start in 'I have an account' mode.
 arvanSetLoginMessage('')

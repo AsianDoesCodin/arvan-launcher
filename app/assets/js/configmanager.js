@@ -59,14 +59,21 @@ exports.getAbsoluteMaxRAM = function(_ram){
     return Math.floor((mem-(gT16 > 0 ? (Number.parseInt(gT16/8) + (16*1073741824)/4) : mem/4))/1073741824)
 }
 
-function resolveSelectedRAM(ram) {
-    if(ram?.recommended != null) {
-        return `${ram.recommended}M`
-    } else {
-        // Legacy behavior
-        const mem = os.totalmem()
-        return mem >= (8*1073741824) ? '4G' : (mem >= (6*1073741824) ? '3G' : '2G')
-    }
+/** Arvan: GB a player may give the game: total RAM minus 2 GB for Windows. */
+exports.getArvanMemoryCap = function(){
+    return Math.max(2, Math.floor(os.totalmem() / 1073741824) - 2)
+}
+
+/** Arvan: choices for the landing-page Memory dropdown (GB), capped at total RAM - 2 GB. */
+exports.getArvanMemoryOptions = function(){
+    const cap = exports.getArvanMemoryCap()
+    const opts = [4, 6, 8, 10, 12].filter(g => g <= cap)
+    return opts.length ? opts : [cap]
+}
+
+// Arvan: new installs default to 6 GB, or less on low-RAM PCs (total - 2 GB).
+function resolveSelectedRAM(_ram) {
+    return `${Math.min(6, exports.getArvanMemoryCap())}G`
 }
 
 /**

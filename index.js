@@ -37,6 +37,10 @@ function initAutoUpdater(event, _data) {
     autoUpdater.on('update-not-available', (info) => {
         event.sender.send('autoUpdateNotification', 'update-not-available', info)
     })
+    // Arvan: forward download progress so Play can show "Updating… N%".
+    autoUpdater.on('download-progress', (p) => {
+        event.sender.send('autoUpdateNotification', 'download-progress', { percent: p.percent, transferred: p.transferred, total: p.total })
+    })
     autoUpdater.on('checking-for-update', () => {
         event.sender.send('autoUpdateNotification', 'checking-for-update')
     })
@@ -63,7 +67,8 @@ ipcMain.on('autoUpdateAction', (event, arg, data) => {
             autoUpdater.allowPrerelease = false // Arvan: prereleases off
             break
         case 'installUpdateNow':
-            autoUpdater.quitAndInstall()
+            // Arvan: silent install, then start the new launcher.
+            autoUpdater.quitAndInstall(true, true)
             break
         default:
             console.log('Unknown argument', arg)

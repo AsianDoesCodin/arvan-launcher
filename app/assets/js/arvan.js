@@ -196,14 +196,193 @@ exports.beforeGameStart = async function(ctx){
             onLog: m => ctx.logger.info('[ampsync]', m)
         })
         try { if(res && res.totalBytes > 0) fs.writeFileSync(path.join(ctx.gameDir, 'automodpack', '.arvan-pack-bytes'), String(res.totalBytes)) } catch(_e) { /* best effort */ }
+        exports.applyGraphicsSafe(ctx)
         ctx.logger.info('[ampsync] done', JSON.stringify({ files: res.files, downloaded: res.downloaded, downloadedBytes: res.downloadedBytes, deleted: res.deleted, upToDate: res.upToDate, modsDirConflicts: res.modsDirConflicts }))
         return res
     } catch(err) {
         if(err && (err.code === 'AMP_NO_SECRET' || err.code === 'AMP_AUTH_FAILED')){
             ctx.logger.info('[ampsync] ' + err.code + ', launching normally (AutoModPack handles the first join).')
+            exports.applyGraphicsSafe(ctx)
             return null
         }
         throw err
+    }
+}
+
+// ---- Graphics presets (packs arrive through the server's AutoModPack host) ----
+exports.BASE_RESOURCE_PACKS = ['vanilla', 'mod_resources', 'fabric', 'efn_enhance_must', 'arvanservercore_armor']
+exports.GRAPHICS_PRESETS = {
+    dark: { label: 'Dark RPG', shader: 'Hysteria-Shaders-Universal-v1.2.2.zip', pack: 'Ashen_16x.zip' },
+    colorful: { label: 'Colorful', shader: 'Fantasy Shaders Unbound v1.1.zip', pack: '[1.19-1.21] Yuushya Release 0.20.0.zip' },
+    medieval: { label: 'Medieval', shader: 'Solas Shader V3.7b.zip', pack: 'Excalibur_V1.20.zip' },
+    performance: { label: 'Performance', shader: null, pack: null }
+}
+exports.DEFAULT_GRAPHICS = 'dark'
+// Single source of truth, shared with the in-game Graphics button (Server Core b33).
+exports.GRAPHICS_FILE = 'arvan-graphics.json'
+
+/** The preset saved in <gameDir>/arvan-graphics.json, or the default when missing/invalid. */
+exports.readGraphicsPreset = function(gameDir){
+    try {
+        const v = JSON.parse(fs.readFileSync(path.join(gameDir, exports.GRAPHICS_FILE), 'utf8'))
+        if(v && exports.GRAPHICS_PRESETS[v.preset]) return v.preset
+    } catch(_e) { /* missing or invalid */ }
+    return exports.DEFAULT_GRAPHICS
+}
+
+exports.writeGraphicsPreset = function(gameDir, presetId){
+    if(!exports.GRAPHICS_PRESETS[presetId]) throw new Error('unknown graphics preset ' + presetId)
+    fs.ensureDirSync(gameDir)
+    const file = path.join(gameDir, exports.GRAPHICS_FILE)
+    fs.writeFileSync(file + '.tmp', JSON.stringify({ preset: presetId }))
+    fs.renameSync(file + '.tmp', file)
+}
+
+/** Make sure <gameDir>/<dir>/<file> exists, copying it from the AutoModPack modpack folder if needed. */
+function ensureInGameDir(gameDir, dir, file, log){
+    const dest = path.join(gameDir, dir, file)
+    if(fs.existsSync(dest)) return true
+    const mpRoot = path.join(gameDir, 'automodpack', 'modpacks')
+    let ids = []
+    try { ids = fs.readdirSync(mpRoot) } catch(_e) { /* none */ }
+    for(const id of ids){
+        const src = path.join(mpRoot, id, dir, file)
+        if(fs.existsSync(src)){
+            fs.ensureDirSync(path.dirname(dest))
+            fs.copyFileSync(src, dest)
+            log.info('[graphics] copied ' + dir + '/' + file + ' from modpack ' + id)
+            return true
+        }
+    }
+    log.warn('[graphics] missing ' + dir + '/' + file + ' (not synced from the server yet)')
+    return false
+}
+
+function jsonList(value){
+    try { const v = JSON.parse(value); return Array.isArray(v) ? v : [] } catch(_e) { return [] }
+}
+
+function readLines(file){
+    let text = ''
+    try { text = fs.readFileSync(file, 'utf8') } catch(_e) { /* new file */ }
+    const eol = text.includes('\r\n') ? '\r\n' : '\n'
+    const lines = text.length ? text.split(/\r?\n/) : []
+    if(lines.length && lines[lines.length - 1] === '') lines.pop()
+    return { lines, eol }
+}
+
+/**
+ * Apply a graphics preset after the sync and before the game starts.
+ * options.txt: only resourcePacks / incompatibleResourcePacks change.
+ * config/oculus.properties: only shaderPack / enableShaders change.
+ */
+exports.applyGraphicsPreset = function(gameDir, presetId, log = console){
+    const id = exports.GRAPHICS_PRESETS[presetId] ? presetId : exports.DEFAULT_GRAPHICS
+    const p = exports.GRAPHICS_PRESETS[id]
+    if(p.pack) ensureInGameDir(gameDir, 'resourcepacks', p.pack, log)
+    if(p.shader) ensureInGameDir(gameDir, 'shaderpacks', p.shader, log)
+
+    const presetPackIds = Object.values(exports.GRAPHICS_PRESETS).filter(x => x.pack).map(x => 'file/' + x.pack)
+    const packs = exports.BASE_RESOURCE_PACKS.concat(p.pack ? ['file/' + p.pack] : [])
+    const optFile = path.join(gameDir, 'options.txt')
+    const opt = readLines(optFile)
+    const packLine = 'resourcePacks:' + JSON.stringify(packs)
+    let sawPacks = false
+    for(let i = 0; i < opt.lines.length; i++){
+        if(opt.lines[i].startsWith('resourcePacks:')){
+            opt.lines[i] = packLine
+            sawPacks = true
+        } else if(opt.lines[i].startsWith('incompatibleResourcePacks:')){
+            const kept = jsonList(opt.lines[i].slice('incompatibleResourcePacks:'.length)).filter(x => !presetPackIds.includes(x))
+            opt.lines[i] = 'incompatibleResourcePacks:' + JSON.stringify(kept)
+        }
+    }
+    if(!sawPacks) opt.lines.push(packLine)
+    fs.writeFileSync(optFile, opt.lines.join(opt.eol) + opt.eol)
+
+    const ocFile = path.join(gameDir, 'config', 'oculus.properties')
+    const oc = readLines(ocFile)
+    const want = { shaderPack: p.shader || '', enableShaders: p.shader ? 'true' : 'false' }
+    const seen = {}
+    for(let i = 0; i < oc.lines.length; i++){
+        const m = /^\s*([^#!=:\s]+)\s*[=:]/.exec(oc.lines[i])
+        if(m && Object.prototype.hasOwnProperty.call(want, m[1])){
+            oc.lines[i] = m[1] + '=' + want[m[1]]
+            seen[m[1]] = true
+        }
+    }
+    for(const k of Object.keys(want)) if(!seen[k]) oc.lines.push(k + '=' + want[k])
+    fs.ensureDirSync(path.dirname(ocFile))
+    fs.writeFileSync(ocFile, oc.lines.join(oc.eol) + oc.eol)
+
+    log.info('[graphics] preset ' + id + ': packs ' + JSON.stringify(packs) + ', shader ' + (p.shader || 'off'))
+    return { preset: id, resourcePacks: packs, shaderPack: want.shaderPack, enableShaders: !!p.shader }
+}
+
+// ---- Login check against the server (PasswordGate SRP over the Minecraft login phase) ----
+/** Names nobody may create from the launcher. */
+exports.RESERVED_NAMES = ['asiandoesmc']
+const AMP_MODPACK_KEY = 'ip216.ip-139-99-4.net-25581'
+
+/**
+ * Store the AutoModpack secret the server issued during a login check, so the pre-launch sync
+ * keeps working (the server replaces the player's secret on every login).
+ */
+exports.saveAmpSecret = function(gameDir, secret){
+    if(!secret || typeof secret.secret !== 'string') return
+    const file = path.join(gameDir, 'automodpack', '.private', 'automodpack-client-secrets.json')
+    let data = {}
+    try { data = JSON.parse(fs.readFileSync(file, 'utf8')) } catch(_e) { /* new file */ }
+    if(!data || typeof data !== 'object') data = {}
+    if(!data.secrets || typeof data.secrets !== 'object') data.secrets = {}
+    const keys = Object.keys(data.secrets)
+    const key = keys.includes(AMP_MODPACK_KEY) || keys.length === 0 ? AMP_MODPACK_KEY : keys[0]
+    data.secrets[key] = { secret: secret.secret, timestamp: secret.timestamp }
+    fs.ensureDirSync(path.dirname(file))
+    fs.writeFileSync(file + '.tmp', JSON.stringify(data, null, 2))
+    fs.renameSync(file + '.tmp', file)
+}
+
+/**
+ * Check a name/password with the server before the launcher accepts it.
+ * mode 'login' (I have an account) or 'create'. Resolves { result, detail }; see arvanauth.js.
+ * The password is never logged.
+ */
+exports.checkAccount = async function(gameDir, name, password, mode, log = console){
+    if(mode === 'create' && exports.RESERVED_NAMES.includes(String(name).toLowerCase())){
+        return { result: 'name_taken', detail: 'reserved name' }
+    }
+    const { checkLogin } = require('./arvanauth')
+    return checkLogin({
+        host: exports.AMP_HOST, port: exports.AMP_PORT, name, password, mode,
+        log: m => log.info(m),
+        onAmpSecret: (_name, secret) => {
+            try { exports.saveAmpSecret(gameDir, secret) } catch(err) { log.warn('[login-check] could not store the AutoModpack secret: ' + err.message) }
+        }
+    })
+}
+
+/** Text shown on the login screen for a failed check, or null when the account can be saved. */
+exports.accountCheckMessage = function(res, mode){
+    switch(res && res.result){
+        case 'ok':
+        case 'ok_unsecured':
+            return null
+        case 'wrong_password': return 'Wrong password.'
+        case 'no_account': return mode === 'create' ? 'That name is already taken.' : 'No account with that name. Names are case-sensitive: check the capital letters, or use "Create account".'
+        case 'name_taken': return 'This name already has an account. Use "I have an account" with your existing password.'
+        case 'rate_limited': return 'Too many attempts. Wait 5 minutes and try again.'
+        case 'offline': return 'Server offline, try later.'
+        default: return 'Could not check the account with the server. Try again in a moment.'
+    }
+}
+
+/** Apply the saved preset; never blocks the launch. */
+exports.applyGraphicsSafe = function(ctx){
+    try {
+        exports.applyGraphicsPreset(ctx.gameDir, exports.readGraphicsPreset(ctx.gameDir), ctx.logger)
+    } catch(err) {
+        ctx.logger.warn('[graphics] could not apply preset', err)
     }
 }
 
@@ -227,7 +406,7 @@ exports.seedAutoModpack = async function(gameDir){
 }
 
 // ---- Arvan password login (Arvan Characters 2.3.0+) ----
-exports.PASSWORD_MIN = 6
+exports.PASSWORD_MIN = 8 // matches the server (PasswordGate minimumPasswordLength)
 exports.PASSWORD_ENV = 'ARVAN_LAUNCHER_PASSWORD'
 exports.AUTH_RESULT_FILE = 'arvan-auth-result.json'
 

@@ -145,7 +145,19 @@
                     <button id="launch_button"><%- lang('landing.launchButton') %></button>
                     <div class="bot_divider"></div>
                     <button id="server_selection_button" class="bot_label"><%- lang('landing.launchButtonPlaceholder') %></button>
-                    <div id="arvanFirstLaunchNote">First launch downloads the Arvan modpack and closes the game once. Press Play again.</div>
+                    <div id="arvanGraphics" title="Graphics preset (shader + resource pack), applied at every launch">
+                        <span id="arvanGraphicsLabel">Graphics</span>
+                        <button class="arvanGfxOpt" data-gfx="dark">Dark RPG</button>
+                        <button class="arvanGfxOpt" data-gfx="colorful">Colorful</button>
+                        <button class="arvanGfxOpt" data-gfx="medieval">Medieval</button>
+                        <button class="arvanGfxOpt" data-gfx="performance">Performance</button>
+                    </div>
+                    <div id="arvanMemoryRow" title="Memory for the game (same setting as Settings > Java)">
+                        <label id="arvanMemoryLabel" for="arvanMemory">Memory</label>
+                        <select id="arvanMemory"></select>
+                    </div>
+                    <div id="arvanUpdateNote" style="display: none;"></div>
+                    <div id="arvanFirstLaunchNote">First launch downloads the Arvan modpack (a few minutes).</div>
                 </div>
                 <div id="launch_details">
                     <div id="launch_details_left">

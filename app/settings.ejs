@@ -49,7 +49,13 @@
                 </div>
             </div>
 
-            <div class="settingsAuthAccountTypeContainer">
+            <!-- Arvan: one simple account panel. -->
+            <div id="arvanAccountPanel">
+                <div id="arvanAccountLine">Logged in as <span id="arvanAccountName">-</span></div>
+                <button id="settingsAddMojangAccount">Log out</button>
+                <div id="arvanAccountNote">Log out clears the saved password and returns to the login screen.</div>
+            </div>
+            <div class="settingsAuthAccountTypeContainer" style="display: none;">
                 <div class="settingsAuthAccountTypeHeader">
                     <div class="settingsAuthAccountTypeHeaderLeft">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 9.677 9.667">
@@ -58,9 +64,6 @@
                             <path d="M1.54 2.844c.314-.76 1.31-.46 1.954-.528.785-.083 1.503.272 2.1.758l.164-.9c.327.345.587.756.964 1.052.28.254.655-.342.86-.013.42.864.408 1.86.54 2.795l-.788-.373C6.9 4.17 5.126 3.052 3.656 3.685c-1.294.592-1.156 2.65.06 3.255 1.354.703 2.953.51 4.405.292-.07.42-.34.87-.834.816l-4.95.002c-.5.055-.886-.413-.838-.89l.04-4.315z" fill="#fff" />
                         </svg>
                         <span><%- lang('settings.mojangAccount') %></span>
-                    </div>
-                    <div class="settingsAuthAccountTypeHeaderRight">
-                        <button class="settingsAddAuthAccount" id="settingsAddMojangAccount"><%- lang('settings.addMojangAccount') %></button>
                     </div>
                 </div>
                 
