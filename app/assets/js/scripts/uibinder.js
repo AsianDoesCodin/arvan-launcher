@@ -16,7 +16,7 @@ let fatalStartupError = false
 // Mapping of each view to their container IDs.
 const VIEWS = {
     landing: '#landingContainer',
-    loginOptions: '#loginOptionsContainer',
+    loginOptions: '#loginContainer', // Arvan: offline name login only, no Microsoft/Mojang options
     login: '#loginContainer',
     settings: '#settingsContainer',
     welcome: '#welcomeContainer',
@@ -59,7 +59,8 @@ function getCurrentView(){
 
 async function showMainUI(data){
 
-    if(!isDev){
+    const ARVAN_AUTO_UPDATE = false // Arvan: self-update disabled (no release host yet)
+    if(ARVAN_AUTO_UPDATE && !isDev){
         loggerAutoUpdater.info('Initializing..')
         ipcRenderer.send('autoUpdateAction', 'initAutoUpdater', ConfigManager.getAllowPrerelease())
     }
@@ -80,7 +81,8 @@ async function showMainUI(data){
             validateSelectedAccount()
         }
 
-        if(ConfigManager.isFirstLaunch()){
+        const ARVAN_SHOW_WELCOME = false // Arvan: skip welcome screen
+        if(ARVAN_SHOW_WELCOME && ConfigManager.isFirstLaunch()){
             currentView = VIEWS.welcome
             $(VIEWS.welcome).fadeIn(1000)
         } else {
@@ -88,12 +90,27 @@ async function showMainUI(data){
                 currentView = VIEWS.landing
                 $(VIEWS.landing).fadeIn(1000)
             } else {
-                loginOptionsCancelEnabled(false)
+                loginOptionsCancelEnabled(false); loginCancelEnabled(false)
                 loginOptionsViewOnLoginSuccess = VIEWS.landing
                 loginOptionsViewOnLoginCancel = VIEWS.loginOptions
                 currentView = VIEWS.loginOptions
                 $(VIEWS.loginOptions).fadeIn(1000)
             }
+        }
+
+        // Arvan test hook (only when ARVAN_AUTOTEST_NAME is set): report visible login UI, log in, press Play.
+        if(process.env.ARVAN_AUTOTEST_NAME && !window.arvanTestRan){
+            window.arvanTestRan = true
+            setTimeout(async () => {
+                const vis = s => $(s).is(':visible')
+                console.log('[ArvanTest] views: login=' + vis('#loginContainer') + ' loginOptions(MS/Mojang)=' + vis('#loginOptionsContainer') + ' welcome=' + vis('#welcomeContainer') + ' landing=' + vis('#landingContainer'))
+                console.log('[ArvanTest] visible inputs: ' + $('input:visible').map((i, el) => el.id + ':' + el.type).get().join(', '))
+                console.log('[ArvanTest] title=' + document.title + ' subheader=' + $('#loginSubheader').text() + ' note=' + $('.loginDisclaimerText:visible').first().text())
+                const acc = await AuthManager.addMojangAccount(process.env.ARVAN_AUTOTEST_NAME, '')
+                updateSelectedAccount(acc)
+                console.log('[ArvanTest] account ' + acc.displayName + ' uuid=' + acc.uuid + ' type=' + acc.type)
+                switchView(getCurrentView(), VIEWS.landing, 100, 100, () => {}, () => { const r = document.getElementById('arvanWordmark').getBoundingClientRect(); console.log('[ArvanTest] wordmark rect x=' + Math.round(r.x) + ' y=' + Math.round(r.y) + ' w=' + Math.round(r.width) + ' h=' + Math.round(r.height) + ' window=' + window.innerWidth + 'x' + window.innerHeight + ' note=' + $('#arvanFirstLaunchNote').is(':visible') + ' mojangStatus=' + $('#mojangStatusWrapper').is(':visible') + ' social=' + $('#externalMedia').is(':visible') + ' players=' + $('#player_count').text()); document.getElementById('launch_button').click() })
+            }, 3000)
         }
 
         setTimeout(() => {

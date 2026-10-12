@@ -1,8 +1,10 @@
-appId: 'helioslauncher'
-productName: 'Helios Launcher'
+appId: 'arvanrpglauncher'
+productName: 'Arvan RPG'
 artifactName: '${productName}-setup-${version}.${ext}'
 
 copyright: 'Copyright © 2018-2026 Daniel Scalzi'
+
+afterPack: './build/arvan-afterpack.js' # Arvan: stamps the crest icon into the exe
 
 asar: true
 compression: 'maximum'
@@ -15,6 +17,8 @@ extraResources:
 
 # Windows Configuration
 win: 
+  icon: 'build/icon.ico' # Arvan crest
+  signAndEditExecutable: false # Arvan: avoids winCodeSign symlink extraction (needs admin/dev mode)
   target: 
     - target: 'nsis'
       arch: 'x64'
@@ -25,6 +29,11 @@ nsis:
   perMachine: false
   allowElevation: true
   allowToChangeInstallationDirectory: true
+  installerIcon: 'build/icon.ico'
+  uninstallerIcon: 'build/icon.ico'
+  installerHeaderIcon: 'build/icon.ico'
+  createDesktopShortcut: true
+  shortcutName: 'Arvan RPG'
 
 # macOS Configuration
 mac:

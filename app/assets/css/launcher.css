@@ -3966,3 +3966,49 @@ input:checked + .toggleSwitchSlider:before {
 .rotating {
     animation: rotating 10s linear infinite;
 }
+/* Arvan jade accents */
+#launch_button:hover, #loginButton:hover, #loginSubheader { color: #5fd3a5 !important; }
+
+/* ===================== Arvan RPG theme ===================== */
+:root { --arvan-navy: #0b1426; --arvan-navy2: #132140; --arvan-jade: #3fbf96; --arvan-jade-hi: #6fe0bb; --arvan-gold: #d9b45a; --arvan-gold-hi: #f0d68c; }
+body { background-image: url('../arvan/img/bg.webp') !important; background-color: var(--arvan-navy) !important; background-size: cover !important; background-position: center !important; }
+#frameBar { background-color: rgba(11, 20, 38, 0.85) !important; }
+#landingContainer { background: linear-gradient(180deg, rgba(11,20,38,0.35) 0%, rgba(11,20,38,0.05) 40%, rgba(11,20,38,0.85) 100%); }
+#loginContainer { background: radial-gradient(ellipse at center, rgba(11,20,38,0.55) 0%, rgba(11,20,38,0.88) 70%); }
+#image_seal, #loginImageSeal, #welcomeImageSeal, #settingsAboutLogo { border-radius: 50%; filter: drop-shadow(0 0 10px rgba(217,180,90,0.55)); }
+/* Arvan wordmark: natural ratio (~3.8:1 after trim), top centre, out of the flex flow so the parent cannot stretch it */
+#landingContainer > #upper > #content { align-items: flex-start; }
+#arvanWordmark { position: fixed; top: 40px; left: 50%; transform: translateX(-50%); width: 460px; max-width: 47vw; height: auto; max-height: 120px; object-fit: contain; flex: none; align-self: flex-start; margin: 0; display: block; pointer-events: none; z-index: 1; filter: drop-shadow(0 0 6px rgba(63,191,150,0.85)) drop-shadow(0 0 18px rgba(63,191,150,0.45)); }
+@media (max-width: 900px) { #arvanWordmark { width: 340px; top: 34px; } }
+#loginWordmark { width: 220px; height: auto; object-fit: contain; flex: none; align-self: center; display: block; margin: 4px auto 6px; filter: drop-shadow(0 0 5px rgba(63,191,150,0.85)) drop-shadow(0 0 14px rgba(63,191,150,0.4)); }
+/* Removed: Mojang status, social links, Discord (no Arvan URL configured), news */
+#mojangStatusWrapper, #server_status_wrapper + .bot_divider, #externalMedia, .mediaDivider, #center #content, #newsButton { display: none !important; }
+#player_count { color: var(--arvan-jade-hi) !important; }
+.bot_label, #landingPlayerLabel { color: var(--arvan-gold) !important; }
+/* Play button */
+#launch_button { background: linear-gradient(180deg, var(--arvan-jade) 0%, #23866a 100%) !important; color: #fff !important; border: 2px solid var(--arvan-gold) !important; border-radius: 6px !important; padding: 10px 34px !important; font-size: 22px !important; font-weight: 900 !important; letter-spacing: 2px; text-shadow: 0 1px 2px rgba(0,0,0,0.6); box-shadow: 0 0 14px rgba(63,191,150,0.55), inset 0 1px 0 rgba(255,255,255,0.25); transition: transform 0.15s ease, box-shadow 0.15s ease; }
+#launch_button:hover { transform: translateY(-1px); box-shadow: 0 0 22px rgba(240,214,140,0.7), inset 0 1px 0 rgba(255,255,255,0.3); color: var(--arvan-gold-hi) !important; }
+#launch_button:disabled { filter: grayscale(0.6); opacity: 0.7; }
+#arvanFirstLaunchNote { margin-top: 8px; max-width: 260px; font-size: 11px; line-height: 1.3; color: var(--arvan-gold-hi); text-shadow: 0 1px 2px #000; text-align: right; }
+/* Progress bar */
+#launch_progress { height: 8px !important; border-radius: 4px; overflow: hidden; background: rgba(11,20,38,0.8) !important; border: 1px solid rgba(217,180,90,0.6); }
+#launch_progress::-webkit-progress-bar { background: rgba(11,20,38,0.8) !important; border-radius: 4px; }
+#launch_progress::-webkit-progress-value { background: linear-gradient(90deg, var(--arvan-jade) 0%, var(--arvan-gold) 100%) !important; border-radius: 4px; box-shadow: 0 0 8px rgba(63,191,150,0.8); }
+#launch_progress_label, #launch_details_text { color: var(--arvan-gold-hi) !important; }
+/* Login */
+#loginSubheader { color: var(--arvan-gold) !important; letter-spacing: 2px; }
+.loginField { background: rgba(11,20,38,0.75) !important; border: 1px solid rgba(63,191,150,0.6) !important; border-radius: 4px !important; color: #fff !important; padding: 8px 10px !important; }
+.loginField:focus { border-color: var(--arvan-gold) !important; box-shadow: 0 0 8px rgba(217,180,90,0.5); }
+#loginButton { background: linear-gradient(180deg, var(--arvan-jade) 0%, #23866a 100%) !important; border: 2px solid var(--arvan-gold) !important; border-radius: 6px !important; padding: 6px 22px !important; box-shadow: 0 0 12px rgba(63,191,150,0.5); }
+#loginButton:disabled { filter: grayscale(0.7); opacity: 0.6; }
+.loginDisclaimerText { color: var(--arvan-gold-hi) !important; opacity: 0.9; }
+.loginErrorSpan { color: #ff8a7a !important; }
+#launch_content { flex-wrap: wrap !important; justify-content: flex-end; }
+#arvanFirstLaunchNote { flex-basis: 100%; margin-left: auto; }
+/* Arvan: update label must show in full (no ellipsis) */
+#launch_details_right { min-width: 250px; }
+#launch_details_text { white-space: normal !important; overflow: visible !important; text-overflow: clip !important; line-height: 1.25; max-width: 300px; }
+/* Arvan: loading screen shows the crest instead of the Helios seal */
+#loadCenterImage { width: 220px !important; animation: arvanPulse 1.6s ease-in-out infinite; }
+#loadSpinnerImage { visibility: hidden; }
+@keyframes arvanPulse { 0%,100% { transform: scale(1); filter: drop-shadow(0 0 6px rgba(46,204,143,.35)); } 50% { transform: scale(1.04); filter: drop-shadow(0 0 16px rgba(46,204,143,.6)); } }

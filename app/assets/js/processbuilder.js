@@ -65,6 +65,13 @@ class ProcessBuilder {
         
         const uberModArr = modObj.fMods.concat(modObj.lMods)
         let args = this.constructJVMArguments(uberModArr, tempNativePath)
+        // Arvan: AF_UNIX selector pipe needs a plain ASCII temp dir (see arvan.js unixDomainTmpDir).
+        const udTmp = require('./arvan').unixDomainTmpDir()
+        if(udTmp != null){
+            args.unshift('-Djdk.net.unixdomain.tmpdir=' + udTmp)
+        }
+        // Arvan: tells Arvan Server Core (b32+) the client was started by the Arvan launcher.
+        args.unshift('-Darvan.launcher=1')
 
         if(mcVersionAtLeast('1.13', this.server.rawServer.minecraftVersion)){
             //args = args.concat(this.constructModArguments(modObj.fMods))
@@ -835,6 +842,23 @@ class ProcessBuilder {
     _resolveServerLibraries(mods){
         const mdls = this.server.modules
         let libs = {}
+
+        // Arvan: Forge is installed by the official installer, so take the classpath from the
+        // installer-written version json (what the vanilla launcher does) instead of distro modules.
+        if(!this.usingFabricLoader && Array.isArray(this.modManifest?.libraries) && this.modManifest.libraries.length > 0){
+            for(const lib of this.modManifest.libraries){
+                const [group, artifact, version, classifier] = lib.name.split(':')
+                const rel = lib.downloads?.artifact?.path
+                    ?? path.join(...group.split('.'), artifact, version, `${artifact}-${version}${classifier ? '-' + classifier : ''}.jar`)
+                const p = path.join(this.libPath, rel)
+                if(fs.existsSync(p)){
+                    libs[`${group}:${artifact}${classifier ? ':' + classifier : ''}`] = p
+                } else {
+                    logger.warn('Forge library missing:', p)
+                }
+            }
+            return libs
+        }
 
         // Locate Forge/Fabric/Libraries
         for(let mdl of mdls){

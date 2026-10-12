@@ -1,0 +1,17 @@
+{
+  "DO_NOT_CHANGE_IT": 2,
+  "selectedModpack": "ip216.ip-139-99-4.net-25581",
+  "installedModpacks": {
+    "ip216.ip-139-99-4.net-25581": {
+      "hostAddress": "ip216.ip-139-99-4.net:25581",
+      "serverAddress": "139.99.4.216:25581",
+      "requiresMagic": true
+    }
+  },
+  "updateSelectedModpackOnLaunch": true,
+  "selfUpdater": false,
+  "syncAutoModpackVersion": true,
+  "syncLoaderVersion": true,
+  "playMusic": true,
+  "allowRemoteNonModpackDeletions": true
+}

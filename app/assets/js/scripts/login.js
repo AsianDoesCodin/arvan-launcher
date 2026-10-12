@@ -2,7 +2,7 @@
  * Script for login.ejs
  */
 // Validation Regexes.
-const validUsername         = /^[a-zA-Z0-9_]{1,16}$/
+const validUsername         = /^[a-zA-Z0-9_]{3,16}$/ // Arvan: offline name rule
 const basicEmail            = /^\S+@\S+\.\S+$/
 //const validEmail          = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
 
@@ -19,7 +19,7 @@ const loginButton           = document.getElementById('loginButton')
 const loginForm             = document.getElementById('loginForm')
 
 // Control variables.
-let lu = false, lp = false
+let lu = false, lp = true // Arvan: no password field
 
 
 /**
@@ -53,7 +53,7 @@ function shakeError(element){
  */
 function validateEmail(value){
     if(value){
-        if(!basicEmail.test(value) && !validUsername.test(value)){
+        if(!validUsername.test(value)){
             showError(loginEmailError, Lang.queryJS('login.error.invalidValue'))
             loginDisabled(true)
             lu = false
@@ -187,7 +187,8 @@ loginButton.addEventListener('click', () => {
     // Show loading stuff.
     loginLoading(true)
 
-    AuthManager.addMojangAccount(loginUsername.value, loginPassword.value).then((value) => {
+    AuthManager.addMojangAccount(loginUsername.value, '').then((value) => {
+        try { localStorage.setItem('arvanLastName', value.displayName) } catch(_e) { /* ignore */ }
         updateSelectedAccount(value)
         loginButton.innerHTML = loginButton.innerHTML.replace(Lang.queryJS('login.loggingIn'), Lang.queryJS('login.success'))
         $('.circle-loader').toggleClass('load-complete')
@@ -232,3 +233,12 @@ loginButton.addEventListener('click', () => {
     })
 
 })
+
+// Arvan: remember the last offline name.
+try {
+    const last = localStorage.getItem('arvanLastName')
+    if(last){
+        loginUsername.value = last
+        validateEmail(last)
+    }
+} catch(_e) { /* ignore */ }

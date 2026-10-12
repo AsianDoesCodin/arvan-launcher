@@ -1,0 +1,53 @@
+{
+    "version": "1.0.0",
+    "rss": "",
+    "servers": [
+        {
+            "id": "arvan",
+            "name": "Arvan RPG",
+            "description": "Arvan RPG - Minecraft 1.20.1 Forge",
+            "icon": "https://raw.githubusercontent.com/dscalzi/HeliosLauncher/master/build/icon.png",
+            "version": "1.0.0",
+            "address": "139.99.4.216:25581",
+            "minecraftVersion": "1.20.1",
+            "mainServer": true,
+            "autoconnect": true,
+            "javaOptions": {
+                "supported": ">=17.x",
+                "suggestedMajor": 17
+            },
+            "modules": [
+                {
+                    "id": "net.minecraftforge:forge:1.20.1-47.4.22:universal",
+                    "name": "Minecraft Forge 47.4.22",
+                    "type": "ForgeHosted",
+                    "artifact": {
+                        "size": 2508714,
+                        "url": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.20.1-47.4.22/forge-1.20.1-47.4.22-universal.jar"
+                    },
+                    "subModules": [
+                        {
+                            "id": "1.20.1-forge-47.4.22",
+                            "name": "Forge version manifest (written by the official Forge installer)",
+                            "type": "VersionManifest",
+                            "artifact": {
+                                "size": 0,
+                                "url": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.20.1-47.4.22/forge-1.20.1-47.4.22-installer.jar"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "pl.skidam:automodpack:4.0.6",
+                    "name": "AutoModPack 4.0.6",
+                    "type": "File",
+                    "artifact": {
+                        "size": 15395275,
+                        "url": "https://cdn.modrinth.com/data/k68glP2e/versions/MJclhoqa/automodpack-mc1.20.1-forge-4.0.6.jar",
+                        "path": "mods/automodpack-mc1.20.1-forge-4.0.6.jar"
+                    }
+                }
+            ]
+        }
+    ]
+}

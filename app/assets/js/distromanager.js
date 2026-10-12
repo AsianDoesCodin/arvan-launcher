@@ -14,4 +14,12 @@ const api = new DistributionAPI(
     false
 )
 
+// Arvan: no distribution host yet, so serve the distribution.json bundled in the app.
+// To switch to a hosted file later, delete this override and set REMOTE_DISTRO_URL.
+const { readBundledDistro } = require('./arvan')
+const { RestResponseStatus } = require('helios-core/common')
+api.pullRemote = async function(){
+    return { data: readBundledDistro(), responseStatus: RestResponseStatus.SUCCESS }
+}
+
 exports.DistroAPI = api

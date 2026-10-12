@@ -139,7 +139,24 @@ function mojangErrorDisplayable(errorCode) {
  * @param {string} password The account password.
  * @returns {Promise.<Object>} Promise which resolves the resolved authenticated account object.
  */
-exports.addMojangAccount = async function(username, password) {
+exports.addMojangAccount = async function(username, _password) {
+    // Arvan: offline name only. No Mojang/Microsoft request is made.
+    const Arvan = require('./arvan')
+    const name = (username || '').trim()
+    if(!Arvan.NAME_REGEX.test(name)){
+        return Promise.reject({ title: 'Invalid name', desc: 'Use 3-16 letters, numbers or _.' })
+    }
+    for(const acc of Object.values(ConfigManager.getAuthAccounts())){
+        ConfigManager.removeAuthAccount(acc.uuid)
+    }
+    const ret = ConfigManager.addMojangAuthAccount(Arvan.offlineUUID(name), '0', name, name)
+    ret.type = 'offline'
+    ConfigManager.save()
+    return ret
+}
+
+// eslint-disable-next-line no-unused-vars
+async function addMojangAccountOnline(username, password) {
     try {
         const response = await MojangRestAPI.authenticate(username, password, ConfigManager.getClientToken())
         console.log(response)
@@ -416,7 +433,9 @@ async function validateSelectedMicrosoftAccount(){
 exports.validateSelected = async function(){
     const current = ConfigManager.getSelectedAccount()
 
-    if(current.type === 'microsoft') {
+    if(current.type === 'offline') {
+        return true
+    } else if(current.type === 'microsoft') {
         return await validateSelectedMicrosoftAccount()
     } else {
         return await validateSelectedMojangAccount()

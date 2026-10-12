@@ -7,6 +7,7 @@ const autoUpdater                       = require('electron-updater').autoUpdate
 const ejse                              = require('ejs-electron')
 const fs                                = require('fs')
 const isDev                             = require('./app/assets/js/isdev')
+const os = require('os')
 const path                              = require('path')
 const semver                            = require('semver')
 const { pathToFileURL }                 = require('url')
@@ -130,7 +131,7 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGIN, (ipcEvent, ...arguments_) => {
         width: 520,
         height: 600,
         frame: true,
-        icon: getPlatformIcon('SealCircle')
+        icon: getPlatformIcon('ArvanIcon')
     })
 
     msftAuthWindow.on('closed', () => {
@@ -181,7 +182,7 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGOUT, (ipcEvent, uuid, isLastAccount) => {
         width: 520,
         height: 600,
         frame: true,
-        icon: getPlatformIcon('SealCircle')
+        icon: getPlatformIcon('ArvanIcon')
     })
 
     msftLogoutWindow.on('closed', () => {
@@ -227,16 +228,24 @@ function createWindow() {
     win = new BrowserWindow({
         width: 980,
         height: 552,
-        icon: getPlatformIcon('SealCircle'),
+        icon: getPlatformIcon('ArvanIcon'),
         frame: false,
         webPreferences: {
             preload: path.join(__dirname, 'app', 'assets', 'js', 'preloader.js'),
             nodeIntegration: true,
             contextIsolation: false
         },
-        backgroundColor: '#171614'
+        backgroundColor: '#171614',
+        title: 'Arvan RPG Launcher'
     })
     remoteMain.enable(win.webContents)
+
+    // Arvan: optional renderer log file for testing (set ARVAN_LOG_FILE).
+    if(process.env.ARVAN_LOG_FILE){
+        win.webContents.on('console-message', (e, ...a) => {
+            try { fs.appendFileSync(process.env.ARVAN_LOG_FILE, (e.message ?? a[1]) + os.EOL) } catch(_e) { /* ignore */ }
+        })
+    }
 
     const data = {
         bkid: Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)),
@@ -339,6 +348,8 @@ function getPlatformIcon(filename){
     return path.join(__dirname, 'app', 'assets', 'images', `${filename}.${ext}`)
 }
 
+// Arvan: taskbar groups under the installer shortcut (appId) so it shows the crest.
+if(process.platform === 'win32') app.setAppUserModelId('arvanrpglauncher')
 app.on('ready', createWindow)
 app.on('ready', createMenu)
 

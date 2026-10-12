@@ -103,6 +103,17 @@ document.getElementById('launch_button').addEventListener('click', async e => {
     loggerLanding.info('Launching game..')
     try {
         const server = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
+        // Arvan: always use Mojang java-runtime-gamma (vanilla launcher runtime).
+        try {
+            toggleLaunchArea(true)
+            setLaunchDetails('Preparing Java..')
+            const javaw = await require('./assets/js/arvan').ensureMojangJava(ConfigManager.getDataDirectory(), loggerLanding,
+                (n, total) => setLaunchPercentage(Math.round(n / total * 100)))
+            ConfigManager.setJavaExecutable(ConfigManager.getSelectedServer(), javaw)
+            ConfigManager.save()
+        } catch(err) {
+            loggerLanding.error('Could not install Mojang Java runtime, falling back to Helios Java.', err)
+        }
         const jExe = ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())
         if(jExe == null){
             await asyncSystemScan(server.effectiveJavaOptions)
@@ -478,6 +489,18 @@ async function dlAsync(login = true) {
     toggleLaunchArea(true)
     setLaunchPercentage(0, 100)
 
+    // Arvan: install Forge with the official installer (no file host), seed AutoModPack config.
+    try {
+        const Arvan = require('./assets/js/arvan')
+        setLaunchDetails('Installing Forge (first time only)..')
+        await Arvan.ensureForgeInstalled(ConfigManager.getCommonDirectory(), ConfigManager.getJavaExecutable(serv.rawServer.id), loggerLaunchSuite)
+        await Arvan.seedAutoModpack(path.join(ConfigManager.getInstanceDirectory(), serv.rawServer.id))
+    } catch(err) {
+        loggerLaunchSuite.error('Forge install failed.', err)
+        showLaunchFailure('Forge install failed', err.message || Lang.queryJS('landing.dlAsync.seeConsoleForDetails'))
+        return
+    }
+
     const fullRepairModule = new FullRepair(
         ConfigManager.getCommonDirectory(),
         ConfigManager.getInstanceDirectory(),
@@ -550,6 +573,22 @@ async function dlAsync(login = true) {
 
     const modLoaderData = await distributionIndexProcessor.loadModLoaderVersionJson(serv)
     const versionData = await mojangIndexProcessor.getVersionJson()
+
+    // Arvan hook: runs right before the game process is built (modpack "Update" step goes here).
+    try {
+        await require('./assets/js/arvan').beforeGameStart({
+            gameDir: path.join(ConfigManager.getInstanceDirectory(), serv.rawServer.id),
+            server: serv, setDetails: setLaunchDetails, setPercent: setLaunchPercentage, logger: loggerLaunchSuite
+        })
+    } catch(err) {
+        loggerLaunchSuite.error('Arvan update failed.', err)
+        toggleLaunchArea(false)
+        setOverlayContent('Update failed', 'Could not update the Arvan modpack (' + (err.code || 'error') + '). Check your connection and try again.', 'Retry', 'Cancel')
+        setOverlayHandler(() => { toggleOverlay(false); toggleLaunchArea(true); dlAsync() })
+        setDismissHandler(() => { toggleOverlay(false) })
+        toggleOverlay(true, true)
+        return
+    }
 
     if(login) {
         const authUser = ConfigManager.getSelectedAccount()

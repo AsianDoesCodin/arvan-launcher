@@ -39,7 +39,14 @@ function onDistroLoad(data){
             ConfigManager.save()
         }
     }
-    ipcRenderer.send('distributionIndexDone', data != null)
+    // Arvan: the bundled distribution loads instantly, so wait until the page scripts
+    // (uibinder.js) have registered their 'distributionIndexDone' listener.
+    const send = () => ipcRenderer.send('distributionIndexDone', data != null)
+    if(document.readyState === 'loading'){
+        document.addEventListener('DOMContentLoaded', send, { once: true })
+    } else {
+        send()
+    }
 }
 
 // Ensure Distribution is downloaded and cached.
