@@ -84,8 +84,15 @@ class ProcessBuilder {
 
         logger.info('Launch Arguments:', loggableArgs)
 
+        // Arvan: the account password goes to the game ONLY through the child's environment
+        // (never args, never logged). this.arvanEnv is set by landing.js right before build().
+        const childEnv = Object.assign({}, process.env)
+        delete childEnv.ARVAN_LAUNCHER_PASSWORD
+        Object.assign(childEnv, this.arvanEnv || {})
+        this.arvanEnv = null
         const child = child_process.spawn(ConfigManager.getJavaExecutable(this.server.rawServer.id), args, {
             cwd: this.gameDir,
+            env: childEnv,
             detached: ConfigManager.getLaunchDetached()
         })
 

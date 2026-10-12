@@ -343,12 +343,13 @@ const msftLoginLogger = LoggerUtil.getLogger('Microsoft Login')
 const msftLogoutLogger = LoggerUtil.getLogger('Microsoft Logout')
 
 // Bind the add mojang account button.
+// Arvan: 'Log out / switch account' clears the stored password and opens the login screen.
 document.getElementById('settingsAddMojangAccount').onclick = (e) => {
-    switchView(getCurrentView(), VIEWS.login, 500, 500, () => {
-        loginViewOnCancel = VIEWS.settings
-        loginViewOnSuccess = VIEWS.settings
-        loginCancelEnabled(true)
-    })
+    const acc = ConfigManager.getSelectedAccount()
+    if(acc != null){
+        AuthManager.clearArvanPassword(acc.uuid)
+    }
+    arvanOpenLogin(acc ? acc.displayName : '', 'Logged out. Log in, or create another character.')
 }
 
 // Bind the add microsoft account button.

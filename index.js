@@ -2,7 +2,7 @@ const remoteMain = require('@electron/remote/main')
 remoteMain.initialize()
 
 // Requirements
-const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu, safeStorage, shell } = require('electron')
 const autoUpdater                       = require('electron-updater').autoUpdater
 const ejse                              = require('ejs-electron')
 const fs                                = require('fs')
@@ -71,6 +71,19 @@ ipcMain.on('autoUpdateAction', (event, arg, data) => {
     }
 })
 // Redirect distribution index event from preloader to renderer.
+// Arvan: encrypt/decrypt the stored account password with the OS keystore (DPAPI on Windows).
+// The plain password never reaches config.json and is never logged.
+ipcMain.handle('arvanSecret', (_event, op, value) => {
+    if(!safeStorage.isEncryptionAvailable()) return null
+    try {
+        if(op === 'encrypt') return safeStorage.encryptString(String(value)).toString('base64')
+        if(op === 'decrypt') return safeStorage.decryptString(Buffer.from(String(value), 'base64'))
+    } catch(_e) {
+        return null
+    }
+    return null
+})
+
 ipcMain.on('distributionIndexDone', (event, res) => {
     event.sender.send('distributionIndexDone', res)
 })

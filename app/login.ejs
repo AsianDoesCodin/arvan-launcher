@@ -10,6 +10,11 @@
             <img id="loginImageSeal" src="assets/arvan/img/logo.webp"/>
             <img id="loginWordmark" src="assets/arvan/img/wordmark.webp" alt="Arvan"/>
             <span id="loginSubheader"><%- lang('login.loginSubheader') %></span>
+            <div id="arvanLoginModes"><!-- Arvan: create / log in -->
+                <button type="button" class="arvanLoginMode" id="arvanModeCreate" data-mode="create">Create account</button>
+                <button type="button" class="arvanLoginMode" id="arvanModeLogin" data-mode="login">I have an account</button>
+            </div>
+            <span id="arvanLoginMessage"></span>
             <div class="loginFieldContainer">
                 <svg id="profileSVG" class="loginSVG" viewBox="40 37 65.36 61.43">
                     <g>
@@ -19,14 +24,23 @@
                 <span class="loginErrorSpan" id="loginEmailError"><%- lang('login.loginEmailError') %></span>
                 <input id="loginUsername" class="loginField" type="text" placeholder="<%- lang('login.loginEmailPlaceholder') %>"/>
             </div>
-            <div class="loginFieldContainer" style="display: none;"><!-- Arvan: no password -->
+            <div class="loginFieldContainer"><!-- Arvan: account password -->
                 <svg id="lockSVG" class="loginSVG" viewBox="40 32 60.36 70.43">
                     <g>
                         <path d="M86.16,54a16.38,16.38,0,1,0-32,0H44V102.7H96V54Zm-25.9-3.39a9.89,9.89,0,1,1,19.77,0A9.78,9.78,0,0,1,79.39,54H60.89A9.78,9.78,0,0,1,60.26,50.59ZM70,96.2a6.5,6.5,0,0,1-6.5-6.5,6.39,6.39,0,0,1,3.1-5.4V67h6.5V84.11a6.42,6.42,0,0,1,3.39,5.6A6.5,6.5,0,0,1,70,96.2Z"/>
                     </g>
                 </svg>
                 <span class="loginErrorSpan" id="loginPasswordError"><%- lang('login.loginPasswordError') %></span>
-                <input id="loginPassword" class="loginField" type="password" placeholder="<%- lang('login.loginPasswordPlaceholder') %>"/>
+                <input id="loginPassword" class="loginField" type="password" autocomplete="off" placeholder="PASSWORD"/>
+            </div>
+            <div class="loginFieldContainer" id="arvanConfirmContainer"><!-- Arvan: confirm (create mode) -->
+                <svg class="loginSVG" viewBox="40 32 60.36 70.43">
+                    <g>
+                        <path d="M86.16,54a16.38,16.38,0,1,0-32,0H44V102.7H96V54Zm-25.9-3.39a9.89,9.89,0,1,1,19.770,0A9.780,9.780,0,0,1,79.39,54H60.89A9.78,9.78,0,0,1,60.26,50.59ZM70,96.2a6.5,6.5,0,0,1-6.5-6.5,6.39,6.39,0,0,1,3.1-5.4V67h6.5V84.11a6.42,6.42,0,0,1,3.39,5.6A6.5,6.5,0,0,1,70,96.2Z"/>
+                    </g>
+                </svg>
+                <span class="loginErrorSpan" id="arvanConfirmError"></span>
+                <input id="arvanPasswordConfirm" class="loginField" type="password" autocomplete="off" placeholder="CONFIRM PASSWORD"/>
             </div>
             <div id="loginOptions" style="display: none;">
                 <span class="loginSpanDim">
@@ -58,7 +72,8 @@
                     <a href="<%- lang('login.loginNeedAccountLink') %>"><%- lang('login.loginNeedAccountText') %></a>
                 </span>
                 <p class="loginDisclaimerText">First launch downloads the Arvan modpack and closes the game once. Press Play again.</p>
-                <p class="loginDisclaimerText">Offline name: 3-16 letters, numbers or _. Use the same name every time to keep your progress.</p>
+                <p class="loginDisclaimerText">Your password protects your character. Don't reuse a real password.</p>
+                <p class="loginDisclaimerText">Name: 3-16 letters, numbers or _. Password: at least 6 characters.</p>
             </div>
         </form>
     </div>

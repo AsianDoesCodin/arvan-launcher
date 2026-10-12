@@ -1,6 +1,7 @@
 name: Build
 
-on: push
+# Arvan: manual only. Releases are published with `gh release create` from a tested local build.
+on: workflow_dispatch
 
 jobs:
   release:

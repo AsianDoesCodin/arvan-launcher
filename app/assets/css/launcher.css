@@ -4012,3 +4012,10 @@ body { background-image: url('../arvan/img/bg.webp') !important; background-colo
 #loadCenterImage { width: 220px !important; animation: arvanPulse 1.6s ease-in-out infinite; }
 #loadSpinnerImage { visibility: hidden; }
 @keyframes arvanPulse { 0%,100% { transform: scale(1); filter: drop-shadow(0 0 6px rgba(46,204,143,.35)); } 50% { transform: scale(1.04); filter: drop-shadow(0 0 16px rgba(46,204,143,.6)); } }
+/* Arvan: password login */
+#arvanLoginModes { display: flex; gap: 6px; margin: 8px 0 4px; }
+.arvanLoginMode { background: rgba(11,20,38,0.75); color: var(--arvan-gold); border: 1px solid rgba(217,180,90,0.5); border-radius: 4px; padding: 5px 12px; font-size: 11px; letter-spacing: 1px; cursor: pointer; font-family: inherit; }
+.arvanLoginMode:hover { color: var(--arvan-gold-hi); border-color: var(--arvan-gold); }
+.arvanLoginMode.active { background: linear-gradient(180deg, var(--arvan-jade) 0%, #23866a 100%); color: #fff; border-color: var(--arvan-gold); }
+#arvanLoginMessage { display: none; max-width: 300px; margin: 4px 0; padding: 6px 10px; border-radius: 4px; font-size: 12px; text-align: center; color: #ffd9c2; background: rgba(120,30,20,0.55); border: 1px solid rgba(240,140,100,0.6); }
+.settingsAuthAccountTypeContainer:has(#settingsAddMicrosoftAccount) { display: none; }

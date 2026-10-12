@@ -17,9 +17,67 @@ const checkmarkContainer    = document.getElementById('checkmarkContainer')
 const loginRememberOption   = document.getElementById('loginRememberOption')
 const loginButton           = document.getElementById('loginButton')
 const loginForm             = document.getElementById('loginForm')
+// Arvan: password login elements.
+const arvanPasswordConfirm  = document.getElementById('arvanPasswordConfirm')
+const arvanConfirmError     = document.getElementById('arvanConfirmError')
+const arvanConfirmContainer = document.getElementById('arvanConfirmContainer')
+const arvanLoginMessage     = document.getElementById('arvanLoginMessage')
+const ARVAN_PW_MIN          = 6
 
 // Control variables.
-let lu = false, lp = true // Arvan: no password field
+let lu = false, lp = false
+let arvanMode = 'create' // Arvan: 'create' (name, password, confirm) or 'login' (name, password)
+
+/** Arvan: show a message above the form (empty string hides it). */
+function arvanSetLoginMessage(text){
+    arvanLoginMessage.textContent = text || ''
+    arvanLoginMessage.style.display = text ? 'block' : 'none'
+}
+
+/** Arvan: confirm field must match in create mode. */
+function arvanConfirmOk(){
+    if(arvanMode !== 'create') return true
+    return arvanPasswordConfirm.value === loginPassword.value
+}
+
+function arvanRefreshButton(){
+    if(arvanMode === 'create' && arvanPasswordConfirm.value.length > 0 && !arvanConfirmOk()){
+        showError(arvanConfirmError, '* Passwords do not match')
+    } else {
+        arvanConfirmError.style.opacity = 0
+    }
+    loginDisabled(!(lu && lp && arvanConfirmOk() && (arvanMode !== 'create' || arvanPasswordConfirm.value.length > 0)))
+}
+
+function arvanSetMode(mode){
+    arvanMode = mode
+    document.getElementById('arvanModeCreate').classList.toggle('active', mode === 'create')
+    document.getElementById('arvanModeLogin').classList.toggle('active', mode === 'login')
+    arvanConfirmContainer.style.display = mode === 'create' ? '' : 'none'
+    if(mode !== 'create') arvanPasswordConfirm.value = ''
+    arvanRefreshButton()
+}
+document.getElementById('arvanModeCreate').onclick = () => arvanSetMode('create')
+document.getElementById('arvanModeLogin').onclick = () => arvanSetMode('login')
+
+/**
+ * Arvan: open the login screen (used by Play when no password is stored, by logout,
+ * and after a failed server check). Prefills the name, never the failed password.
+ */
+function arvanOpenLogin(name, message, mode = 'login'){
+    loginViewOnSuccess = VIEWS.landing
+    loginCancelEnabled(false)
+    loginUsername.value = name || ''
+    loginPassword.value = ''
+    arvanPasswordConfirm.value = ''
+    lp = false
+    if(name) validateEmail(name)
+    arvanSetMode(mode)
+    arvanSetLoginMessage(message)
+    if(getCurrentView() !== VIEWS.login){
+        switchView(getCurrentView(), VIEWS.login, 500, 500)
+    }
+}
 
 
 /**
@@ -60,9 +118,7 @@ function validateEmail(value){
         } else {
             loginEmailError.style.opacity = 0
             lu = true
-            if(lp){
-                loginDisabled(false)
-            }
+            arvanRefreshButton()
         }
     } else {
         lu = false
@@ -77,15 +133,13 @@ function validateEmail(value){
  * @param {string} value The password value.
  */
 function validatePassword(value){
-    if(value){
+    if(value && value.length >= ARVAN_PW_MIN){
         loginPasswordError.style.opacity = 0
         lp = true
-        if(lu){
-            loginDisabled(false)
-        }
+        arvanRefreshButton()
     } else {
         lp = false
-        showError(loginPasswordError, Lang.queryJS('login.error.invalidValue'))
+        showError(loginPasswordError, value ? '* At least ' + ARVAN_PW_MIN + ' characters' : Lang.queryJS('login.error.requiredValue'))
         loginDisabled(true)
     }
 }
@@ -107,6 +161,13 @@ loginUsername.addEventListener('input', (e) => {
 loginPassword.addEventListener('input', (e) => {
     validatePassword(e.target.value)
 })
+arvanPasswordConfirm.addEventListener('input', () => {
+    arvanRefreshButton()
+})
+// Arvan: Enter submits.
+for(const el of [loginUsername, loginPassword, arvanPasswordConfirm]){
+    el.addEventListener('keydown', (e) => { if(e.key === 'Enter' && !loginButton.disabled) loginButton.click() })
+}
 
 /**
  * Enable or disable the login button.
@@ -144,6 +205,7 @@ function formDisabled(v){
     loginCancelButton.disabled = v
     loginUsername.disabled = v
     loginPassword.disabled = v
+    arvanPasswordConfirm.disabled = v
     if(v){
         checkmarkContainer.setAttribute('disabled', v)
     } else {
@@ -168,6 +230,7 @@ loginCancelButton.onclick = (e) => {
     switchView(getCurrentView(), loginViewOnCancel, 500, 500, () => {
         loginUsername.value = ''
         loginPassword.value = ''
+        arvanPasswordConfirm.value = ''
         loginCancelEnabled(false)
         if(loginViewCancelHandler != null){
             loginViewCancelHandler()
@@ -181,13 +244,18 @@ loginForm.onsubmit = () => { return false }
 
 // Bind login button behavior.
 loginButton.addEventListener('click', () => {
+    if(!arvanConfirmOk()){
+        arvanRefreshButton()
+        return
+    }
+    arvanSetLoginMessage('')
     // Disable form.
     formDisabled(true)
 
     // Show loading stuff.
     loginLoading(true)
 
-    AuthManager.addMojangAccount(loginUsername.value, '').then((value) => {
+    AuthManager.addMojangAccount(loginUsername.value, loginPassword.value).then((value) => {
         try { localStorage.setItem('arvanLastName', value.displayName) } catch(_e) { /* ignore */ }
         updateSelectedAccount(value)
         loginButton.innerHTML = loginButton.innerHTML.replace(Lang.queryJS('login.loggingIn'), Lang.queryJS('login.success'))
@@ -204,6 +272,7 @@ loginButton.addEventListener('click', () => {
                 loginViewCancelHandler = null // Reset this for good measure.
                 loginUsername.value = ''
                 loginPassword.value = ''
+                arvanPasswordConfirm.value = ''
                 $('.circle-loader').toggleClass('load-complete')
                 $('.checkmark').toggle()
                 loginLoading(false)
@@ -234,11 +303,15 @@ loginButton.addEventListener('click', () => {
 
 })
 
-// Arvan: remember the last offline name.
+// Arvan: remember the last name; returning players start in 'I have an account' mode.
+arvanSetLoginMessage('')
 try {
     const last = localStorage.getItem('arvanLastName')
     if(last){
         loginUsername.value = last
         validateEmail(last)
+        arvanSetMode('login')
+    } else {
+        arvanSetMode('create')
     }
-} catch(_e) { /* ignore */ }
+} catch(_e) { arvanSetMode('create') }

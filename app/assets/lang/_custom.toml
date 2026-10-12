@@ -13,6 +13,8 @@ mediaDiscordURL = "https://discord.gg/zNWUXdt"
 [ejs.settings]
 sourceGithubLink = "https://github.com/AsianDoesCodin/arvan-launcher"
 supportLink = "https://github.com/AsianDoesCodin/arvan-launcher/issues"
+mojangAccount = "Arvan account"
+addMojangAccount = "Log out / switch account"
 
 [ejs.welcome]
 welcomeHeader = "WELCOME TO ARVAN RPG"
@@ -20,7 +22,7 @@ welcomeDescription = "Our mission is to recreate the universe imagined by author
 welcomeDescCTA = "You are just a few clicks away from Westeros."
 
 [ejs.login]
-loginSubheader = "ARVAN RPG - ENTER YOUR NAME"
+loginSubheader = "ARVAN RPG - YOUR CHARACTER"
 loginEmailError = "* 3-16 letters, numbers or _"
 loginEmailPlaceholder = "PLAYER NAME"
 loginButtonText = "CONTINUE"

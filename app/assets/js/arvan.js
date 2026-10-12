@@ -225,3 +225,42 @@ exports.seedAutoModpack = async function(gameDir){
         }
     }
 }
+
+// ---- Arvan password login (Arvan Characters 2.3.0+) ----
+exports.PASSWORD_MIN = 6
+exports.PASSWORD_ENV = 'ARVAN_LAUNCHER_PASSWORD'
+exports.AUTH_RESULT_FILE = 'arvan-auth-result.json'
+
+/** Encrypt with Electron safeStorage (main process). Resolves base64 or null if unavailable. */
+exports.encryptPassword = function(pw){
+    return require('electron').ipcRenderer.invoke('arvanSecret', 'encrypt', pw)
+}
+
+/** Stored password for an account, decrypted, or null. */
+exports.accountPassword = async function(acc){
+    if(acc == null || !acc.arvanPw) return null
+    return require('electron').ipcRenderer.invoke('arvanSecret', 'decrypt', acc.arvanPw)
+}
+
+/**
+ * Read <gameDir>/arvan-auth-result.json written by the mod, if it is newer than the launch.
+ * The file is always deleted once read. Returns {result, name, ts} or null.
+ */
+exports.takeAuthResult = function(gameDir, launchedAt){
+    const f = path.join(gameDir, exports.AUTH_RESULT_FILE)
+    let st
+    try { st = fs.statSync(f) } catch(_e) { return null }
+    let res = null
+    if(st.mtimeMs >= launchedAt - 2000){
+        try { res = JSON.parse(fs.readFileSync(f, 'utf8')) } catch(_e) { res = { result: 'error' } }
+    }
+    try { fs.removeSync(f) } catch(_e) { /* ignore */ }
+    if(res != null && typeof res.result !== 'string') res.result = 'error'
+    return res
+}
+
+/** Message for a failed auth result. */
+exports.authResultMessage = function(result){
+    if(result === 'rate_limited') return 'Too many attempts, wait a minute.'
+    return 'Wrong password, or that name is already taken by another player.'
+}

@@ -111,6 +111,12 @@ document.getElementById('launch_button').addEventListener('click', async e => {
         loggerLanding.info('Launch ignored: the game is already updating or running.')
         return
     }
+    // Arvan: a stored (encrypted) password is required to play.
+    const arvanAcc = ConfigManager.getSelectedAccount()
+    if(arvanAcc == null || !arvanAcc.arvanPw){
+        arvanOpenLogin(arvanAcc ? arvanAcc.displayName : '', 'Enter your password to play.')
+        return
+    }
     arvanLaunching = true
     setLaunchEnabled(false)
     loggerLanding.info('Launching game..')
@@ -610,6 +616,17 @@ async function dlAsync(login = true) {
         const authUser = ConfigManager.getSelectedAccount()
         loggerLaunchSuite.info(`Sending selected account (${authUser.displayName}) to ProcessBuilder.`)
         let pb = new ProcessBuilder(serv, versionData, modLoaderData, authUser, remote.app.getVersion())
+        // Arvan: decrypt the stored password; it is handed to the game only as an env var.
+        const ArvanAuth = require('./assets/js/arvan')
+        const arvanPw = await ArvanAuth.accountPassword(authUser)
+        if(arvanPw == null){
+            toggleLaunchArea(false)
+            arvanOpenLogin(authUser.displayName, 'Enter your password to play.')
+            return
+        }
+        pb.arvanEnv = { [ArvanAuth.PASSWORD_ENV]: arvanPw }
+        const arvanGameDir = path.join(ConfigManager.getInstanceDirectory(), serv.rawServer.id)
+        const arvanLaunchedAt = Date.now()
         setLaunchDetails(Lang.queryJS('landing.dlAsync.launchingGame'))
 
         // const SERVER_JOINED_REGEX = /\[.+\]: \[CHAT\] [a-zA-Z0-9_]{1,16} joined the game/
@@ -665,7 +682,11 @@ async function dlAsync(login = true) {
             // Arvan: keep Play disabled until this game process exits.
             setLaunchEnabled(false)
             const thisProc = proc
-            proc.on('close', () => { if(proc === thisProc) proc = null; setLaunchEnabled(true) })
+            proc.on('close', () => {
+                if(proc === thisProc) proc = null
+                setLaunchEnabled(true)
+                arvanAfterGameExit(arvanGameDir, arvanLaunchedAt, authUser)
+            })
 
             // Bind listeners to stdout.
             proc.stdout.on('data', tempListener)
@@ -693,6 +714,25 @@ async function dlAsync(login = true) {
         }
     }
 
+}
+
+/**
+ * Arvan: after the game exits, read the mod's auth result (arvan-auth-result.json).
+ * ok -> just delete it. Anything else -> delete, forget the stored password and
+ * return to the login screen with a short message.
+ */
+function arvanAfterGameExit(gameDir, launchedAt, authUser){
+    try {
+        const Arvan = require('./assets/js/arvan')
+        const res = Arvan.takeAuthResult(gameDir, launchedAt)
+        if(res == null) return
+        loggerLanding.info('Arvan auth result: ' + res.result)
+        if(res.result === 'ok') return
+        AuthManager.clearArvanPassword(authUser.uuid)
+        arvanOpenLogin(authUser.displayName, Arvan.authResultMessage(res.result))
+    } catch(err) {
+        loggerLanding.error('Could not handle the Arvan auth result.', err)
+    }
 }
 
 /**

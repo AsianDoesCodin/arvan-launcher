@@ -139,20 +139,36 @@ function mojangErrorDisplayable(errorCode) {
  * @param {string} password The account password.
  * @returns {Promise.<Object>} Promise which resolves the resolved authenticated account object.
  */
-exports.addMojangAccount = async function(username, _password) {
-    // Arvan: offline name only. No Mojang/Microsoft request is made.
+exports.addMojangAccount = async function(username, password) {
+    // Arvan: name + password account. No Mojang/Microsoft request is made; the Arvan
+    // server checks the password (passed to the game as an env var at launch).
     const Arvan = require('./arvan')
     const name = (username || '').trim()
     if(!Arvan.NAME_REGEX.test(name)){
         return Promise.reject({ title: 'Invalid name', desc: 'Use 3-16 letters, numbers or _.' })
     }
-    for(const acc of Object.values(ConfigManager.getAuthAccounts())){
-        ConfigManager.removeAuthAccount(acc.uuid)
+    if(typeof password !== 'string' || password.length < Arvan.PASSWORD_MIN){
+        return Promise.reject({ title: 'Password too short', desc: 'Use at least ' + Arvan.PASSWORD_MIN + ' characters.' })
     }
-    const ret = ConfigManager.addMojangAuthAccount(Arvan.offlineUUID(name), '0', name, name)
+    const enc = await Arvan.encryptPassword(password)
+    if(enc == null){
+        return Promise.reject({ title: 'Cannot store password', desc: 'Windows could not encrypt the password on this PC.' })
+    }
+    const uuid = Arvan.offlineUUID(name)
+    const ret = ConfigManager.addMojangAuthAccount(uuid, '0', name, name)
     ret.type = 'offline'
+    ret.arvanPw = enc // safeStorage-encrypted (DPAPI), base64
     ConfigManager.save()
     return ret
+}
+
+/** Arvan: forget the stored password of an account (it stays listed, but must log in again). */
+exports.clearArvanPassword = function(uuid){
+    const acc = ConfigManager.getAuthAccount(uuid)
+    if(acc != null){
+        delete acc.arvanPw
+        ConfigManager.save()
+    }
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -293,6 +309,12 @@ exports.addMicrosoftAccount = async function(authCode) {
 exports.removeMojangAccount = async function(uuid){
     try {
         const authAcc = ConfigManager.getAuthAccount(uuid)
+        if(authAcc == null || authAcc.type === 'offline'){
+            // Arvan: local account; removing it also drops its encrypted password.
+            ConfigManager.removeAuthAccount(uuid)
+            ConfigManager.save()
+            return
+        }
         const response = await MojangRestAPI.invalidate(authAcc.accessToken, ConfigManager.getClientToken())
         if(response.responseStatus === RestResponseStatus.SUCCESS) {
             ConfigManager.removeAuthAccount(uuid)
