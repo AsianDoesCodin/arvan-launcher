@@ -7,9 +7,7 @@ const autoUpdater                       = require('electron-updater').autoUpdate
 const ejse                              = require('ejs-electron')
 const fs                                = require('fs')
 const isDev                             = require('./app/assets/js/isdev')
-const os = require('os')
 const path                              = require('path')
-const semver                            = require('semver')
 const { pathToFileURL }                 = require('url')
 const { AZURE_CLIENT_ID, MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR, SHELL_OPCODE } = require('./app/assets/js/ipcconstants')
 const LangLoader                        = require('./app/assets/js/langloader')
@@ -18,14 +16,10 @@ const LangLoader                        = require('./app/assets/js/langloader')
 LangLoader.setupLanguage()
 
 // Setup auto updater.
-function initAutoUpdater(event, data) {
+function initAutoUpdater(event, _data) {
 
-    if(data){
-        autoUpdater.allowPrerelease = true
-    } else {
-        // Defaults to true if application version contains prerelease components (e.g. 0.12.1-alpha.1)
-        // autoUpdater.allowPrerelease = true
-    }
+    // Arvan: stable releases only (prerelease handling stays off).
+    autoUpdater.allowPrerelease = false
     
     if(isDev){
         autoUpdater.autoInstallOnAppQuit = false
@@ -66,16 +60,7 @@ ipcMain.on('autoUpdateAction', (event, arg, data) => {
                 })
             break
         case 'allowPrereleaseChange':
-            if(!data){
-                const preRelComp = semver.prerelease(app.getVersion())
-                if(preRelComp != null && preRelComp.length > 0){
-                    autoUpdater.allowPrerelease = true
-                } else {
-                    autoUpdater.allowPrerelease = data
-                }
-            } else {
-                autoUpdater.allowPrerelease = data
-            }
+            autoUpdater.allowPrerelease = false // Arvan: prereleases off
             break
         case 'installUpdateNow':
             autoUpdater.quitAndInstall()
@@ -149,8 +134,8 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGIN, (ipcEvent, ...arguments_) => {
             let queryMap = {}
             
             new URL(uri).searchParams.forEach((v, k) => {
-                queryMap[k] = v;
-            });
+                queryMap[k] = v
+            })
 
             ipcEvent.reply(MSFT_OPCODE.REPLY_LOGIN, MSFT_REPLY_TYPE.SUCCESS, queryMap, msftAuthViewSuccess)
 
@@ -240,12 +225,6 @@ function createWindow() {
     })
     remoteMain.enable(win.webContents)
 
-    // Arvan: optional renderer log file for testing (set ARVAN_LOG_FILE).
-    if(process.env.ARVAN_LOG_FILE){
-        win.webContents.on('console-message', (e, ...a) => {
-            try { fs.appendFileSync(process.env.ARVAN_LOG_FILE, (e.message ?? a[1]) + os.EOL) } catch(_e) { /* ignore */ }
-        })
-    }
 
     const data = {
         bkid: Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)),

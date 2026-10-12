@@ -1,3 +1,4 @@
+/* global document */
 const {ipcRenderer}  = require('electron')
 const fs             = require('fs-extra')
 const os             = require('os')

@@ -1,13 +1,13 @@
 {
   "name": "arvanrpglauncher",
-  "version": "2.2.1",
+  "version": "1.0.0",
   "productName": "Arvan RPG",
   "description": "Arvan RPG Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
-  "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
+  "author": "AsianDoesCodin (based on HeliosLauncher by Daniel Scalzi)",
+  "license": "MIT",
+  "homepage": "https://github.com/AsianDoesCodin/arvan-launcher",
   "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
+    "url": "https://github.com/AsianDoesCodin/arvan-launcher/issues"
   },
   "private": true,
   "main": "index.js",
@@ -18,7 +18,7 @@
     "dist:mac": "npm run dist -- -m",
     "dist:linux": "npm run dist -- -l",
     "lint": "eslint .",
-    "copy:ampsync": "node -e \"require('fs').mkdirSync('app/assets/js/ampsync',{recursive:true});require('fs').copyFileSync('../app/assets/js/ampsync/index.js','app/assets/js/ampsync/index.js')\"",
+    "copy:ampsync": "node -e \"const fs=require('fs');const s='../app/assets/js/ampsync/index.js';if(fs.existsSync(s)){fs.mkdirSync('app/assets/js/ampsync',{recursive:true});fs.copyFileSync(s,'app/assets/js/ampsync/index.js')}\"",
     "prestart": "npm run copy:ampsync",
     "predist": "npm run copy:ampsync"
   },
@@ -51,6 +51,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+    "url": "git+https://github.com/AsianDoesCodin/arvan-launcher.git"
   }
 }

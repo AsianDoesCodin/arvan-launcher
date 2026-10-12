@@ -98,8 +98,21 @@ function setLaunchEnabled(val){
     document.getElementById('launch_button').disabled = !val
 }
 
+// Arvan: one launch at a time. Play is ignored while a launch/update is in progress
+// or while the game process from this launcher is still running.
+let arvanLaunching = false
+function arvanGameRunning(){
+    return proc != null && proc.exitCode === null && proc.signalCode === null
+}
+
 // Bind launch button
 document.getElementById('launch_button').addEventListener('click', async e => {
+    if(arvanLaunching || arvanGameRunning()){
+        loggerLanding.info('Launch ignored: the game is already updating or running.')
+        return
+    }
+    arvanLaunching = true
+    setLaunchEnabled(false)
     loggerLanding.info('Launching game..')
     try {
         const server = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
@@ -135,6 +148,9 @@ document.getElementById('launch_button').addEventListener('click', async e => {
     } catch(err) {
         loggerLanding.error('Unhandled error in during launch process.', err)
         showLaunchFailure(Lang.queryJS('landing.launch.failureTitle'), Lang.queryJS('landing.launch.failureText'))
+    } finally {
+        arvanLaunching = false
+        if(!arvanGameRunning()) setLaunchEnabled(true)
     }
 })
 
@@ -646,6 +662,10 @@ async function dlAsync(login = true) {
         try {
             // Build Minecraft process.
             proc = pb.build()
+            // Arvan: keep Play disabled until this game process exits.
+            setLaunchEnabled(false)
+            const thisProc = proc
+            proc.on('close', () => { if(proc === thisProc) proc = null; setLaunchEnabled(true) })
 
             // Bind listeners to stdout.
             proc.stdout.on('data', tempListener)

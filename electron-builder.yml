@@ -1,8 +1,15 @@
 appId: 'arvanrpglauncher'
 productName: 'Arvan RPG'
-artifactName: '${productName}-setup-${version}.${ext}'
+artifactName: 'ArvanRPG-Setup-${version}.${ext}' # Arvan: no spaces (electron-updater / GitHub asset names)
 
-copyright: 'Copyright © 2018-2026 Daniel Scalzi'
+copyright: 'Copyright © 2026 AsianDoesCodin. Based on HeliosLauncher © 2018-2026 Daniel Scalzi (MIT)'
+
+# Arvan: self-update from GitHub releases (stable only).
+publish:
+  provider: 'github'
+  owner: 'AsianDoesCodin'
+  repo: 'arvan-launcher'
+  releaseType: 'release'
 
 afterPack: './build/arvan-afterpack.js' # Arvan: stamps the crest icon into the exe
 
