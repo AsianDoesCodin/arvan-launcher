@@ -259,7 +259,7 @@ exports.checkLogin = function({ host, port, name, password, mode = 'login', time
                 wrapped(msgId, PG_CHANNEL, encodeAuth(p, 'PREMIUM_PROOF_FAILED'))
             } else if(p.type === 'REGISTER_REQUEST'){
                 if(mode !== 'create') return finish('no_account', 'server asks to register')
-                if(password.length < p.parameter) return finish('error', 'password shorter than ' + p.parameter)
+                if(password.length < p.parameter) return finish('password_too_short', 'server minimum ' + p.parameter)
                 const v = srpVerifier(p.first, uuidString(p.identity), password)
                 submitted = true
                 wrapped(msgId, PG_CHANNEL, encodeAuth(p, 'REGISTER_SUBMIT', 0, unsigned(v)))

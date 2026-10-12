@@ -372,6 +372,7 @@ exports.accountCheckMessage = function(res, mode){
         case 'no_account': return mode === 'create' ? 'That name is already taken.' : 'No account with that name. Names are case-sensitive: check the capital letters, or use "Create account".'
         case 'name_taken': return 'This name already has an account. Use "I have an account" with your existing password.'
         case 'rate_limited': return 'Too many attempts. Wait 5 minutes and try again.'
+        case 'password_too_short': return 'Password too short for a new account (min 8 characters).'
         case 'offline': return 'Server offline, try later.'
         default: return 'Could not check the account with the server. Try again in a moment.'
     }
@@ -441,5 +442,6 @@ exports.takeAuthResult = function(gameDir, launchedAt){
 /** Message for a failed auth result. */
 exports.authResultMessage = function(result){
     if(result === 'rate_limited') return 'Too many attempts, wait a minute.'
+    if(result === 'password_too_short') return 'Password too short for a new account (min 8 characters).'
     return 'Wrong password, or that name is already taken by another player.'
 }

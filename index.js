@@ -231,6 +231,8 @@ function createWindow() {
     win = new BrowserWindow({
         width: 980,
         height: 552,
+        minWidth: 980, // Arvan: the landing bottom bar is laid out for 980x552 and up
+        minHeight: 552,
         icon: getPlatformIcon('ArvanIcon'),
         frame: false,
         webPreferences: {
