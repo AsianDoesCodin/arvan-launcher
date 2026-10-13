@@ -224,6 +224,7 @@ exports.checkLogin = function({ host, port, name, password, mode = 'login', time
         let connected = false
         let submitted = false
         let expectM2 = null
+        let acked = false
         let sawGate = false
         const sock = net.connect({ host, port })
         const timer = setTimeout(() => finish(connected ? 'error' : 'offline', 'timeout'), timeoutMs)
@@ -274,6 +275,7 @@ exports.checkLogin = function({ host, port, name, password, mode = 'login', time
                 if(mode === 'create'){
                     // ACK makes the server save the new password; close once it moves on.
                     wrapped(msgId, PG_CHANNEL, encodeAuth(p, 'ACK'))
+                    acked = true
                     setTimeout(() => finish('ok'), 1500)
                 } else {
                     // Verified. Close without ACK: no parent session is committed for a mere check.
@@ -307,6 +309,8 @@ exports.checkLogin = function({ host, port, name, password, mode = 'login', time
                         onGate(msgId, decodeAuth(payload))
                     } else if(inner === CHARACTER_CHANNEL){
                         // Past the password gate: the server moved on to character selection.
+                        // After a create ACK this is the normal next step: the password is already saved.
+                        if(acked) return finish('ok')
                         if(submitted) return finish('error', 'character selection after a password exchange')
                         if(!sawGate) return finish('error', 'character selection without the password gate')
                         // No password was asked: the name has no secured account.
