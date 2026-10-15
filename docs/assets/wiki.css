@@ -101,8 +101,8 @@ ul.tips{max-width:760px;color:#cfdfd7}
 .ic0.big{font-size:2rem}.ic0.ii{font-size:.8rem}
 .nmw{display:flex;gap:12px;align-items:flex-start}
 .nmw>div{min-width:0}
-.sg a.sub{padding-left:26px;font-size:.88rem;color:var(--mute)}
-.sg a.sub.on{color:var(--gold)}
+.sg a.subl{padding-left:26px;font-size:.88rem;color:var(--mute)}
+.sg a.subl.on{color:var(--gold)}
 .pathhead{display:flex;align-items:center;gap:18px;margin-bottom:6px}
 .pathhead h1{margin:0}
 .kick{font:600 .75rem Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--jade)}
