@@ -38,7 +38,7 @@ function render(){
   var words=q.split(/\s+/);
   var hits=idx.map(function(e){return{e:e,s:score(e,q,words)}}).filter(function(x){return x.s>0}).sort(function(a,b){return b.s-a.s}).slice(0,30);
   sel=-1;
-  res.innerHTML=hits.length?hits.map(function(h){return '<a href="'+root+h.e.u+'"><b>'+esc(h.e.t)+'</b><small>'+esc(h.e.c)+(h.e.d?' · '+esc(h.e.d):'')+'</small></a>'}).join(''):'<div class="none">No results</div>';
+  res.innerHTML=hits.length?hits.map(function(h){return '<a href="'+root+h.e.u+'">'+(h.e.i?'<img class="ic" src="'+root+esc(h.e.i)+'" alt="">':'')+'<span><b>'+esc(h.e.t)+'</b><small>'+esc(h.e.c)+(h.e.d?' · '+esc(h.e.d):'')+'</small></span></a>'}).join(''):'<div class="none">No results</div>';
   res.classList.add('on');
 }
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}

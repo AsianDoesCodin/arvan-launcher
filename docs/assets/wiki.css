@@ -90,3 +90,37 @@ ul.tips{max-width:760px;color:#cfdfd7}
   .wk{padding-top:84px}
 }
 .wres a small{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+
+/* icons */
+.ic{width:40px;height:40px;flex:none;object-fit:contain;background:rgba(4,11,13,.7);border:1px solid var(--line);border-radius:9px;padding:3px;display:inline-block}
+.ic.px{image-rendering:pixelated}
+.ic.ii{width:22px;height:22px;padding:1px;border-radius:5px;vertical-align:-6px;margin-right:6px}
+.ic.sm{width:34px;height:34px}
+.ic.big{width:72px;height:72px;padding:5px;border-radius:14px;border-color:var(--gold2);box-shadow:0 0 22px rgba(236,202,120,.16)}
+.ic0{display:inline-grid;place-items:center;color:var(--jade);font-size:1.15rem;background:radial-gradient(circle at 50% 40%,rgba(63,224,168,.22),rgba(4,11,13,.75))}
+.ic0.big{font-size:2rem}.ic0.ii{font-size:.8rem}
+.nmw{display:flex;gap:12px;align-items:flex-start}
+.nmw>div{min-width:0}
+.sg a.sub{padding-left:26px;font-size:.88rem;color:var(--mute)}
+.sg a.sub.on{color:var(--gold)}
+.pathhead{display:flex;align-items:center;gap:18px;margin-bottom:6px}
+.pathhead h1{margin:0}
+.kick{font:600 .75rem Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--jade)}
+.pan.pth{display:flex;gap:16px;align-items:flex-start}
+.pan.pth h3{margin:0 0 4px}
+.pan.pth p{margin:3px 0 0}
+details.rk summary{cursor:pointer;color:var(--jade);font-size:.88rem;white-space:nowrap}
+details.rk div{font-size:.82rem;color:var(--mute);margin-top:3px;white-space:nowrap}
+.sets{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin:10px 0 18px}
+.set{background:rgba(11,29,33,.8);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.set .sname{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
+.set .sname small{color:var(--jade);font-weight:600}
+.spieces{display:flex;gap:8px}
+.spieces a{display:block;border-radius:9px;transition:transform .2s}
+.spieces a:hover{transform:translateY(-3px)}
+.chips2{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chp{display:inline-flex;align-items:center;gap:8px;background:rgba(15,42,46,.7);border:1px solid var(--line);border-radius:10px;padding:4px 12px 4px 5px;text-decoration:none;color:var(--text)!important;font-size:.9rem}
+.chp:hover{border-color:var(--gold2)}
+.wres a{display:flex;align-items:center;gap:10px}
+.wres a .ic{width:30px;height:30px;padding:2px}
+.wres a>span{min-width:0;flex:1}
