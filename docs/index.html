@@ -1,195 +1,102 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Arvan RPG Launcher</title>
-<meta name="description" content="Download the Arvan RPG launcher: one installer, automatic mods and updates, a jade-and-gold Minecraft RPG server.">
+<meta name="description" content="Download the Arvan launcher: one installer, automatic mods and updates, a jade-and-gold Minecraft RPG server.">
 <meta property="og:title" content="Arvan RPG Launcher">
-<meta property="og:description" content="One installer, automatic mods and updates. Download the Arvan RPG client.">
-<meta property="og:image" content="media/hero.jpg">
+<meta property="og:description" content="Download the Arvan launcher: one installer, automatic mods and updates, a jade-and-gold Minecraft RPG server.">
+<meta property="og:image" content="media/banner.jpg">
+<meta name="theme-color" content="#040b0d">
 <link rel="icon" href="media/logo.png">
-<style>
-:root{
-  --bg:#050e10; --panel:#0a1a1d; --panel2:#0e2428; --line:#2a4a45;
-  --gold:#e3c06a; --gold2:#b8923a; --jade:#3fcf9b; --text:#e8efe9; --mute:#9bb2aa; --red:#a3261f;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--text);font:17px/1.6 "Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
-a{color:var(--jade)}
-img,video{max-width:100%;display:block}
-.wrap{width:min(1120px,100% - 32px);margin:0 auto}
-h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:600;line-height:1.2;margin:0}
-h2{font-size:clamp(1.7rem,4vw,2.4rem);color:var(--gold);text-align:center;margin-bottom:.4em}
-.sub{text-align:center;color:var(--mute);max-width:640px;margin:0 auto 2.2rem}
-section{padding:72px 0}
-
-/* hero */
-.hero{position:relative;min-height:92vh;display:flex;align-items:flex-end;justify-content:center;text-align:center;
-  background:linear-gradient(180deg,rgba(5,14,16,.35),rgba(5,14,16,.55) 60%,var(--bg)),url(media/hero.jpg) center/cover no-repeat}
-.hero .wrap{padding:60px 0 90px}
-.hero img.word{width:min(520px,78vw);margin:0 auto 10px;filter:drop-shadow(0 6px 24px rgba(0,0,0,.7))}
-.hero p.tag{font-size:clamp(1.05rem,2.4vw,1.35rem);max-width:620px;margin:0 auto 30px;text-shadow:0 2px 12px #000}
-.btn{display:inline-flex;align-items:center;gap:12px;padding:16px 34px;border-radius:6px;font:600 1.15rem Georgia,serif;
-  text-decoration:none;color:#fff;background:linear-gradient(180deg,#c3382f,var(--red));border:1px solid var(--gold2);
-  box-shadow:0 0 0 2px rgba(0,0,0,.4),0 8px 28px rgba(163,38,31,.45);transition:transform .15s,filter .15s}
-.btn:hover{transform:translateY(-2px);filter:brightness(1.12)}
-.btn.alt{background:rgba(10,26,29,.75);box-shadow:none;font-size:1rem;padding:12px 22px}
-.meta{margin-top:14px;color:var(--mute);font-size:.92rem;text-shadow:0 1px 8px #000}
-.row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:center}
-
-/* cards */
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
-.card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:8px;padding:22px}
-.card h3{color:var(--gold);font-size:1.15rem;margin-bottom:6px}
-.card p{margin:0;color:var(--mute);font-size:.98rem}
-
-/* trailer + video */
-.frame{position:relative;width:100%;aspect-ratio:16/9;border:1px solid var(--gold2);border-radius:8px;overflow:hidden;background:#000;
-  box-shadow:0 12px 48px rgba(0,0,0,.6)}
-.frame iframe,.frame video{position:absolute;inset:0;width:100%;height:100%;border:0}
-.vids{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-top:8px}
-figure{margin:0}
-figcaption{color:var(--mute);font-size:.92rem;margin-top:8px;text-align:center}
-
-/* gallery */
-.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-.gal button{all:unset;cursor:zoom-in;display:block;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#000;position:relative}
-.gal button:focus-visible{outline:2px solid var(--jade)}
-.gal img{width:100%;aspect-ratio:16/10;object-fit:cover;transition:transform .3s}
-.gal button:hover img{transform:scale(1.04)}
-.gal span{position:absolute;left:0;right:0;bottom:0;padding:22px 12px 9px;font-size:.9rem;
-  background:linear-gradient(0deg,rgba(0,0,0,.85),transparent)}
-#lb{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:50;padding:20px;cursor:zoom-out}
-#lb.on{display:flex}
-#lb img{max-height:90vh;border:1px solid var(--gold2)}
-
-/* steps */
-ol.steps{list-style:none;counter-reset:s;padding:0;margin:0 auto;max-width:720px}
-ol.steps li{counter-increment:s;position:relative;padding:14px 0 14px 60px;border-bottom:1px solid var(--line)}
-ol.steps li:before{content:counter(s);position:absolute;left:0;top:12px;width:40px;height:40px;border-radius:50%;
-  display:grid;place-items:center;font:700 1.1rem Georgia,serif;color:var(--bg);background:linear-gradient(180deg,var(--gold),var(--gold2))}
-ol.steps b{color:var(--gold)}
-.banner{background:linear-gradient(90deg,rgba(5,14,16,.92) 30%,rgba(5,14,16,.2)),url(media/banner.jpg) center/cover no-repeat;border-block:1px solid var(--gold2)}
-.banner .wrap{padding:60px 0}
-.banner h2{text-align:left}
-footer{padding:36px 0 50px;text-align:center;color:var(--mute);font-size:.9rem}
-@media (max-width:600px){section{padding:52px 0}.banner{background:linear-gradient(rgba(5,14,16,.85),rgba(5,14,16,.85)),url(media/banner.jpg) center/cover}}
-</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
+<div id="progress"></div><canvas id="fx"></canvas><div id="cursor"></div>
+<div id="curtain"><i></i><i></i><i></i><i></i><i></i></div>
+<header class="nav"><div class="wrap">
+  <a class="brand" href="index.html"><img src="media/logo.png" alt="">ARVAN</a>
+  <button id="burger" aria-label="Menu">&#9776;</button>
+  <nav class="links"><a href="index.html" class="on">Home</a><a href="world.html">The World</a><a href="gallery.html">Gallery</a><a href="media.html">Videos</a><a href="download.html">Download</a><a class="cta" href="download.html">Play now</a></nav>
+</div></header>
+<main>
 
 <header class="hero">
-  <div class="wrap">
-    <h1 style="position:absolute;left:-9999px">Arvan RPG</h1>
-    <p class="tag">A jade-and-gold Minecraft RPG: classes, bosses, pets, crafting and a story that runs from Lv 1 to 200. One installer does the rest.</p>
-    <div class="row">
-      <a class="btn" id="dl" href="https://github.com/AsianDoesCodin/arvan-launcher/releases/latest">&#11015; Download for Windows</a>
-      <a class="btn alt" href="#install">How to install</a>
-    </div>
-    <div class="meta" id="dlmeta">Windows 10/11, 64-bit</div>
-  </div>
+  <div class="stage"><img src="media/banner.jpg" alt=""><div class="glow"></div><div class="glow two"></div></div>
+  <div class="fog"></div><div class="fog b"></div>
+  <div class="wrap"><div class="copy in">
+    <span class="eyebrow">A Minecraft RPG server</span>
+    <img class="word" src="media/wordmark.png" alt="Arvan">
+    <h1 class="big shimmer" style="display:block">Step through the Warp Crystal</h1>
+    <p class="lead">Classes, bosses, mounts and a story that runs from Lv 1 to 200. Come to <b class="rot"><span>slay bosses</span><span>tame mounts</span><span>forge gear</span><span>fish at dusk</span><span>raid with friends</span></b></p>
+    <div class="row"><a class="btn" data-dl href="https://github.com/AsianDoesCodin/arvan-launcher/releases/latest"><svg viewBox="0 0 24 24"><path d="M12 3v10.2l3.6-3.6 1.4 1.4-6 6-6-6 1.4-1.4 3.6 3.6V3zM4 19h16v2H4z"/></svg>Download for Windows</a><a class="btn ghost" href="world.html">Explore the world</a></div>
+    <div class="meta" data-meta>Windows 10/11, 64-bit</div>
+  </div></div>
+  <div class="scrollhint"></div>
 </header>
 
 <section>
   <div class="wrap">
-    <h2>Install once, play forever</h2>
-    <p class="sub">The launcher downloads the game, the mods and the server's resource packs for you, and keeps them current.</p>
+    <div class="stats">
+      <div class="stat" data-r="up"><b data-to="200">0</b><span>Level cap</span></div>
+      <div class="stat" data-r="up"><b data-to="12">0</b><span>Journey villages</span></div>
+      <div class="stat" data-r="up"><b data-to="150" data-suf="+">0</b><span>Monster camps</span></div>
+      <div class="stat" data-r="up"><b data-to="90" data-suf="+">0</b><span>Story quests</span></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:20px">
+  <div class="wrap">
+    <h2 class="t" data-r="up">One installer. Everything else is automatic.</h2>
+    <svg class="orn" aria-hidden="true"></svg>
     <div class="grid">
-      <div class="card"><h3>Automatic mods</h3><p>No hunting for mod files. The launcher pulls the exact set the server needs straight from the server.</p></div>
-      <div class="card"><h3>Silent updates</h3><p>New versions install themselves. Play unlocks once you are on the latest release, so everyone matches.</p></div>
-      <div class="card"><h3>Your own account</h3><p>Pick a name and a password when you first log in. Your character stays yours.</p></div>
-      <div class="card"><h3>Graphics presets</h3><p>Choose a preset that fits your PC. The same setting is also in the in-game Esc menu.</p></div>
+      <div class="card tilt" data-r="up"><div class="ico">&#9881;</div><h3>Mods on autopilot</h3><p>The launcher pulls the exact mod set straight from the server. No file hunting, no version mix-ups.</p></div>
+      <div class="card tilt" data-r="up"><div class="ico">&#10227;</div><h3>Silent updates</h3><p>New releases install themselves, and Play unlocks once you are current, so every player matches.</p></div>
+      <div class="card tilt" data-r="up"><div class="ico">&#9876;</div><h3>Your own character</h3><p>Choose a name and password at first login. Your hero, gear and progress stay yours.</p></div>
+      <div class="card tilt" data-r="up"><div class="ico">&#10024;</div><h3>Graphics presets</h3><p>Pick a preset that suits your PC. The same choice lives in the in-game Esc menu.</p></div>
     </div>
   </div>
 </section>
 
-<section style="padding-top:0">
+<section style="padding-top:20px">
   <div class="wrap">
-    <h2>Raid trailer</h2>
-    <p class="sub">The Bone Cavalier boss raid.</p>
-    <div class="frame">
-      <iframe src="https://www.youtube-nocookie.com/embed/2HTBntArqkI" title="Arvan Bone Cavalier boss raid"
-        loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-    </div>
+    <h2 class="t" data-r="up">Bone Cavalier raid</h2>
+    <svg class="orn" aria-hidden="true"></svg>
+    <div class="spin" data-r="zoom"><div style="padding:14px">
+      <div class="frame corners"><i></i><i></i>
+        <iframe src="https://www.youtube-nocookie.com/embed/2HTBntArqkI" title="Arvan Bone Cavalier boss raid" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      </div>
+    </div></div>
   </div>
 </section>
 
-<section style="padding-top:0">
-  <div class="wrap">
-    <h2>In the world</h2>
-    <p class="sub">Screenshots from the live server. Click one to enlarge.</p>
-    <div class="gal" id="gal">
-      <button data-src="media/shot-061219.png"><img loading="lazy" src="media/shot-061219.png" alt="Greywall Citadel"><span>Greywall Citadel</span></button>
-      <button data-src="media/shot-061644.png"><img loading="lazy" src="media/shot-061644.png" alt="King Naga boss"><span>King Naga, final boss of the first Face</span></button>
-      <button data-src="media/shot-061026.png"><img loading="lazy" src="media/shot-061026.png" alt="Inventory and character sheet"><span>Character sheet and bag</span></button>
-      <button data-src="media/shot-061150.png"><img loading="lazy" src="media/shot-061150.png" alt="Pets menu"><span>Pets and mounts</span></button>
-      <button data-src="media/shot-061056.png"><img loading="lazy" src="media/shot-061056.png" alt="Skills screen"><span>Skills, spells and passives</span></button>
-      <button data-src="media/shot-061319.png"><img loading="lazy" src="media/shot-061319.png" alt="Blacksmith crafting"><span>Blacksmith crafting</span></button>
-      <button data-src="media/shot-061232.png"><img loading="lazy" src="media/shot-061232.png" alt="Quest journal"><span>Quest journal</span></button>
-      <button data-src="media/shot-061304.png"><img loading="lazy" src="media/shot-061304.png" alt="NPC conversation"><span>Conversations with townsfolk</span></button>
-      <button data-src="media/shot-061720.png"><img loading="lazy" src="media/shot-061720.png" alt="Guildmaster"><span>The Guildmaster</span></button>
-    </div>
-  </div>
+<section style="padding:30px 0 70px">
+  <div class="wrap"><h2 class="t" data-r="up">Straight from the server</h2><svg class="orn" aria-hidden="true"></svg></div>
+  <div class="marquee"><div class="track">
+    <img src="media/shot-061219.png" alt="Greywall Citadel" loading="lazy" data-lb="media/shot-061219.png" data-cap="Greywall Citadel"><img src="media/shot-061644.png" alt="King Naga" loading="lazy" data-lb="media/shot-061644.png" data-cap="King Naga"><img src="media/shot-061026.png" alt="Character sheet" loading="lazy" data-lb="media/shot-061026.png" data-cap="Character sheet"><img src="media/shot-061150.png" alt="Pets and mounts" loading="lazy" data-lb="media/shot-061150.png" data-cap="Pets and mounts"><img src="media/shot-061056.png" alt="Skills" loading="lazy" data-lb="media/shot-061056.png" data-cap="Skills"><img src="media/shot-061319.png" alt="Blacksmith" loading="lazy" data-lb="media/shot-061319.png" data-cap="Blacksmith"><img src="media/shot-061232.png" alt="Quest journal" loading="lazy" data-lb="media/shot-061232.png" data-cap="Quest journal"><img src="media/shot-061304.png" alt="Townsfolk" loading="lazy" data-lb="media/shot-061304.png" data-cap="Townsfolk"><img src="media/shot-061720.png" alt="The Guildmaster" loading="lazy" data-lb="media/shot-061720.png" data-cap="The Guildmaster">
+    <span class="dup" style="display:contents"><img src="media/shot-061219.png" alt="" loading="lazy" data-lb="media/shot-061219.png" data-cap="Greywall Citadel"><img src="media/shot-061644.png" alt="" loading="lazy" data-lb="media/shot-061644.png" data-cap="King Naga"><img src="media/shot-061026.png" alt="" loading="lazy" data-lb="media/shot-061026.png" data-cap="Character sheet"><img src="media/shot-061150.png" alt="" loading="lazy" data-lb="media/shot-061150.png" data-cap="Pets and mounts"><img src="media/shot-061056.png" alt="" loading="lazy" data-lb="media/shot-061056.png" data-cap="Skills"><img src="media/shot-061319.png" alt="" loading="lazy" data-lb="media/shot-061319.png" data-cap="Blacksmith"><img src="media/shot-061232.png" alt="" loading="lazy" data-lb="media/shot-061232.png" data-cap="Quest journal"><img src="media/shot-061304.png" alt="" loading="lazy" data-lb="media/shot-061304.png" data-cap="Townsfolk"><img src="media/shot-061720.png" alt="" loading="lazy" data-lb="media/shot-061720.png" data-cap="The Guildmaster"></span>
+  </div></div>
 </section>
 
-<section style="padding-top:0">
-  <div class="wrap">
-    <h2>Clips</h2>
-    <p class="sub">Mining, fishing and flying pets.</p>
-    <div class="vids">
-      <figure><div class="frame"><video controls preload="metadata" playsinline src="media/mining.mp4"></video></div><figcaption>Mining</figcaption></figure>
-      <figure><div class="frame"><video controls preload="metadata" playsinline src="media/fishing.mp4"></video></div><figcaption>Fishing</figcaption></figure>
-      <figure><div class="frame"><video controls preload="metadata" playsinline src="media/flying-pet.mp4"></video></div><figcaption>Flying pet</figcaption></figure>
-    </div>
+<section class="cta-band">
+  <div class="wrap" data-r="zoom">
+    <h2 class="t shimmer" style="color:transparent">Your adventure starts with one click</h2>
+    <p class="sub" style="margin-bottom:30px">Free launcher, Windows 10/11. Install it, log in, press Play.</p>
+    <a class="btn" data-dl href="https://github.com/AsianDoesCodin/arvan-launcher/releases/latest"><svg viewBox="0 0 24 24"><path d="M12 3v10.2l3.6-3.6 1.4 1.4-6 6-6-6 1.4-1.4 3.6 3.6V3zM4 19h16v2H4z"/></svg>Download the launcher</a>
   </div>
 </section>
+</main>
+<footer><div class="wrap">
+  <p><a href="index.html">Home</a><a href="world.html">The World</a><a href="gallery.html">Gallery</a><a href="media.html">Videos</a><a href="download.html">Download</a></p>
+  <p><a href="https://github.com/AsianDoesCodin/arvan-launcher/releases">All releases</a><a href="https://github.com/AsianDoesCodin/arvan-launcher">Source on GitHub</a></p>
+  <p>Arvan is a fan-made Minecraft server project, not affiliated with Mojang or Microsoft. Launcher based on HeliosLauncher (MIT).</p>
+</div></footer>
 
-<section class="banner" id="install">
-  <div class="wrap">
-    <h2>Install in four steps</h2>
-    <ol class="steps">
-      <li><b>Download</b> the installer with the button below.</li>
-      <li><b>Run it.</b> Windows may show a "protected your PC" notice because the installer is not code-signed. Choose <b>More info</b>, then <b>Run anyway</b>.</li>
-      <li><b>Log in</b> with a name and a password (8 characters or more). The launcher downloads the game and mods the first time.</li>
-      <li><b>Press Play.</b> After that, updates install themselves.</li>
-    </ol>
-    <p style="margin-top:28px"><a class="btn" id="dl2" href="https://github.com/AsianDoesCodin/arvan-launcher/releases/latest">&#11015; Download for Windows</a></p>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap">
-    <p><a href="https://github.com/AsianDoesCodin/arvan-launcher/releases">All releases</a> &middot;
-       <a href="https://github.com/AsianDoesCodin/arvan-launcher">Source on GitHub</a></p>
-    <p>Arvan is a fan-made Minecraft server project and is not affiliated with Mojang or Microsoft. Launcher based on HeliosLauncher (MIT).</p>
-  </div>
-</footer>
-
-<div id="lb" aria-hidden="true"><img alt=""></div>
-
-<script>
-(function(){
-  var lb=document.getElementById('lb'),im=lb.querySelector('img');
-  document.getElementById('gal').addEventListener('click',function(e){
-    var b=e.target.closest('button'); if(!b)return;
-    im.src=b.dataset.src; lb.classList.add('on');
-  });
-  lb.addEventListener('click',function(){lb.classList.remove('on');im.removeAttribute('src');});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.click();});
-
-  // Point the buttons at the newest installer asset.
-  fetch('https://api.github.com/repos/AsianDoesCodin/arvan-launcher/releases/latest')
-    .then(function(r){return r.ok?r.json():Promise.reject();})
-    .then(function(rel){
-      var a=(rel.assets||[]).filter(function(x){return /Setup.*\.exe$/i.test(x.name);})[0];
-      if(!a)return;
-      ['dl','dl2'].forEach(function(id){document.getElementById(id).href=a.browser_download_url;});
-      document.getElementById('dlmeta').textContent=
-        rel.tag_name+' · '+(a.size/1048576).toFixed(0)+' MB · Windows 10/11, 64-bit';
-    }).catch(function(){});
-})();
-</script>
+<div id="lb"><button class="x" aria-label="Close">&times;</button><button class="p" aria-label="Previous">&#8249;</button><button class="n" aria-label="Next">&#8250;</button><img alt=""><div class="cp"></div></div>
+<script src="assets/app.js"></script>
 </body>
 </html>

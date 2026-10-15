@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Download the Arvan Launcher</title>
+<meta name="description" content="Get the free Arvan launcher for Windows. Install, log in, press Play.">
+<meta property="og:title" content="Download the Arvan Launcher">
+<meta property="og:description" content="Get the free Arvan launcher for Windows. Install, log in, press Play.">
+<meta property="og:image" content="media/banner.jpg">
+<meta name="theme-color" content="#040b0d">
+<link rel="icon" href="media/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="progress"></div><canvas id="fx"></canvas><div id="cursor"></div>
+<div id="curtain"><i></i><i></i><i></i><i></i><i></i></div>
+<header class="nav"><div class="wrap">
+  <a class="brand" href="index.html"><img src="media/logo.png" alt="">ARVAN</a>
+  <button id="burger" aria-label="Menu">&#9776;</button>
+  <nav class="links"><a href="index.html">Home</a><a href="world.html">The World</a><a href="gallery.html">Gallery</a><a href="media.html">Videos</a><a href="download.html" class="on">Download</a><a class="cta" href="download.html">Play now</a></nav>
+</div></header>
+<main>
+
+<header class="hero small">
+  <div class="stage"><img src="media/banner.jpg" alt=""><div class="glow"></div><div class="glow two"></div></div><div class="fog"></div>
+  <div class="wrap"><div class="in"><span class="eyebrow">Download</span><h1 class="shimmer">Get the launcher</h1><p>Free, about 100 MB, and it keeps itself up to date.</p></div></div>
+</header>
+<section style="padding-top:50px"><div class="wrap">
+  <div class="spin dlcard" data-r="zoom"><div>
+    <div class="ver" data-ver>Latest</div>
+    <div class="facts"><span><b data-size>&nbsp;</b>Size</span><span><b data-date>&nbsp;</b>Released</span><span><b>Windows</b>10 / 11, 64-bit</span></div>
+    <a class="btn" data-dl href="https://github.com/AsianDoesCodin/arvan-launcher/releases/latest"><svg viewBox="0 0 24 24"><path d="M12 3v10.2l3.6-3.6 1.4 1.4-6 6-6-6 1.4-1.4 3.6 3.6V3zM4 19h16v2H4z"/></svg>Download installer</a>
+    <p class="meta" style="margin-top:18px">Having trouble? <a href="https://github.com/AsianDoesCodin/arvan-launcher/releases">See all releases</a></p>
+  </div></div>
+</div></section>
+
+<section id="install"><div class="wrap">
+  <h2 class="t" data-r="up">Install in four steps</h2><svg class="orn" aria-hidden="true"></svg>
+  <ol class="steps">
+    <li data-r="left"><b>Download</b><span>Press the button above to get the installer.</span></li>
+    <li data-r="left"><b>Run it</b><span>If Windows warns you, choose More info, then Run anyway.</span></li>
+    <li data-r="left"><b>Log in</b><span>Pick a name and a password (8 characters or more). The first launch downloads the game and mods.</span></li>
+    <li data-r="left"><b>Press Play</b><span>That is it. Updates install themselves from now on.</span></li>
+  </ol>
+</div></section>
+
+<section style="padding-top:20px"><div class="wrap">
+  <h2 class="t" data-r="up">Questions</h2><svg class="orn" aria-hidden="true"></svg>
+  <div class="faq"><div class="q" data-r="up"><button>Windows says it "protected my PC". Is that normal?</button><div class="a"><p>Yes. The installer is not code-signed yet, so Windows SmartScreen shows a warning. Choose More info, then Run anyway. The installer is built from the public source on GitHub.</p></div></div><div class="q" data-r="up"><button>How long is the first launch?</button><div class="a"><p>The launcher downloads the game, the mods and the server's resource packs the first time, so allow a few minutes. After that, only changes download.</p></div></div><div class="q" data-r="up"><button>What account do I use?</button><div class="a"><p>You make one inside the launcher: pick a name and a password of at least 8 characters. It is checked securely when you join the server.</p></div></div><div class="q" data-r="up"><button>Why is Play locked?</button><div class="a"><p>Play stays locked until the launcher is on the newest release, so everyone runs the same version. Updates install silently; just wait for it to finish.</p></div></div><div class="q" data-r="up"><button>Can I change graphics?</button><div class="a"><p>Yes. The launcher has graphics presets, and the same setting is in the in-game Esc menu under Graphics.</p></div></div><div class="q" data-r="up"><button>Is it safe? What about Mac or Linux?</button><div class="a"><p>The source is public on GitHub. The launcher is Windows only for now.</p></div></div></div>
+</div></section>
+</main>
+<footer><div class="wrap">
+  <p><a href="index.html">Home</a><a href="world.html">The World</a><a href="gallery.html">Gallery</a><a href="media.html">Videos</a><a href="download.html">Download</a></p>
+  <p><a href="https://github.com/AsianDoesCodin/arvan-launcher/releases">All releases</a><a href="https://github.com/AsianDoesCodin/arvan-launcher">Source on GitHub</a></p>
+  <p>Arvan is a fan-made Minecraft server project, not affiliated with Mojang or Microsoft. Launcher based on HeliosLauncher (MIT).</p>
+</div></footer>
+
+<div id="lb"><button class="x" aria-label="Close">&times;</button><button class="p" aria-label="Previous">&#8249;</button><button class="n" aria-label="Next">&#8250;</button><img alt=""><div class="cp"></div></div>
+<script src="assets/app.js"></script>
+</body>
+</html>
