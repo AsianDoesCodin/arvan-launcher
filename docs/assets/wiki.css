@@ -124,3 +124,5 @@ details.rk div{font-size:.82rem;color:var(--mute);margin-top:3px;white-space:now
 .wres a{display:flex;align-items:center;gap:10px}
 .wres a .ic{width:30px;height:30px;padding:2px}
 .wres a>span{min-width:0;flex:1}
+/* safety net for cached pages that still use the old class name */
+.sg a.sub{text-align:left;margin:0;max-width:none;padding-left:26px;font-size:.88rem;color:var(--mute)}
