@@ -253,3 +253,20 @@ footer a{color:var(--gold);text-decoration:none;margin:0 10px}footer a:hover{tex
   *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
   [data-r]{opacity:1;transform:none}.in>*{opacity:1;transform:none}#fx,#cursor{display:none}
 }
+
+/* ---- art pass: static painted backgrounds, no moving effects ---- */
+body{background:#040b0d}
+body:before{content:"";position:fixed;inset:0;z-index:0;background:url(../media/bg-body.jpg) center/cover no-repeat;opacity:.6;pointer-events:none}
+body:after{content:"";position:fixed;inset:0;z-index:0;background:linear-gradient(180deg,rgba(4,11,13,.55),rgba(4,11,13,.8));pointer-events:none}
+#fx,#cursor,.fog,.glow{display:none!important}
+.stage{transform:translate(-50%,-50%)!important;will-change:auto}
+.card{padding:0}
+.card .art{height:190px;background-size:cover;background-position:center;position:relative;border-bottom:1px solid var(--gold2)}
+.card .art:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(11,29,33,.95))}
+.card .cb{padding:20px 24px 26px}
+.card:hover .art{filter:brightness(1.12)}
+.cta-band{background:linear-gradient(rgba(4,11,13,.72),rgba(4,11,13,.82)),url(../media/bg-cta.jpg) center/cover no-repeat;border-block:1px solid rgba(236,202,120,.25)}
+.hero.small{min-height:62vh}
+@media (max-width:700px){.card .art{height:160px}}
+
+#curtain{display:none!important}
