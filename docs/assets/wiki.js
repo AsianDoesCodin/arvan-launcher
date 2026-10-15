@@ -22,6 +22,9 @@ $$('.tf').forEach(function(box){
   inp.addEventListener('input',run);
 });
 
+/* town screenshot thumbs */
+$('.tthumbs button').forEach(function(b){b.addEventListener('click',function(){var c=b.closest('.tcard'),im=$('.thero img',c);if(!im)return;im.src=b.getAttribute('data-th');$('.tthumbs button',c).forEach(function(x){x.classList.toggle('on',x===b)})})});
+
 /* global search */
 var inp=$('#wsearch'),res=$('#wres'),idx=null,loading=false,sel=-1;
 function load(cb){if(idx)return cb();if(loading)return;loading=true;
