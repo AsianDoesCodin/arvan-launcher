@@ -126,3 +126,7 @@ details.rk div{font-size:.82rem;color:var(--mute);margin-top:3px;white-space:now
 .wres a>span{min-width:0;flex:1}
 /* safety net for cached pages that still use the old class name */
 .sg a.sub{text-align:left;margin:0;max-width:none;padding-left:26px;font-size:.88rem;color:var(--mute)}
+.wlist{display:flex;flex-direction:column;gap:6px}
+.wlist a{display:flex;align-items:center;text-decoration:none;color:var(--text)!important;font-size:.9rem;line-height:1.2}
+.wlist a:hover{color:var(--gold)!important}
+.spieces.wrap{flex-wrap:wrap}
