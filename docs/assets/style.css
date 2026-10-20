@@ -256,7 +256,7 @@ footer a{color:var(--gold);text-decoration:none;margin:0 10px}footer a:hover{tex
 
 /* ---- art pass: static painted backgrounds, no moving effects ---- */
 body{background:#040b0d}
-body:before{content:"";position:fixed;inset:0;z-index:0;background:url(../media/bg-body.jpg?v=20261021g) center/cover no-repeat;opacity:.6;pointer-events:none}
+body:before{content:"";position:fixed;inset:0;z-index:0;background:url(../media/bg-body.jpg?v=20261021h) center/cover no-repeat;opacity:.6;pointer-events:none}
 body:after{content:"";position:fixed;inset:0;z-index:0;background:linear-gradient(180deg,rgba(4,11,13,.55),rgba(4,11,13,.8));pointer-events:none}
 #fx,#cursor,.fog,.glow{display:none!important}
 .stage{transform:translate(-50%,-50%)!important;will-change:auto}
@@ -265,7 +265,7 @@ body:after{content:"";position:fixed;inset:0;z-index:0;background:linear-gradien
 .card .art:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(11,29,33,.95))}
 .card .cb{padding:20px 24px 26px}
 .card:hover .art{filter:brightness(1.12)}
-.cta-band{background:linear-gradient(rgba(4,11,13,.72),rgba(4,11,13,.82)),url(../media/bg-cta-night.jpg?v=20261021g) center/cover no-repeat;border-block:1px solid rgba(236,202,120,.25)}
+.cta-band{background:linear-gradient(rgba(4,11,13,.72),rgba(4,11,13,.82)),url(../media/bg-cta-night.jpg?v=20261021h) center/cover no-repeat;border-block:1px solid rgba(236,202,120,.25)}
 .hero.small{min-height:62vh}
 @media (max-width:700px){.card .art{height:160px}}
 
@@ -281,3 +281,11 @@ body:after{content:"";position:fixed;inset:0;z-index:0;background:linear-gradien
 .links a.srv:after{display:none}
 .srvline{display:flex;margin-top:10px;font-size:.95rem}
 @keyframes srvpulse{0%{box-shadow:0 0 0 0 rgba(63,224,168,.55)}70%{box-shadow:0 0 0 8px rgba(63,224,168,0)}100%{box-shadow:0 0 0 0 rgba(63,224,168,0)}}
+
+/* discord link */
+.links a.dc{display:inline-flex;align-items:center;gap:10px;padding:4px 8px;color:var(--text)}
+.links a.dc:after{display:none}
+.links a.dc svg{width:30px;height:auto;display:block;transition:color .2s,transform .2s}
+.links a.dc:hover svg{color:#7983f5;transform:translateY(-2px)}
+.links a.dc .t{display:none}
+@media (max-width:820px){.links a.dc{padding:14px}.links a.dc .t{display:inline}.links a.dc svg{width:28px}}
