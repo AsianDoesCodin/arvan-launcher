@@ -111,7 +111,7 @@ if(nl&&scta){var sp=document.createElement('a');sp.className='srv';sp.href=sb?sb
 $$('[data-srv]').forEach(function(e){e.innerHTML='<i></i><span>Checking server...</span>';srvEls.push([e,false])});
 function srvShow(s){srvEls.forEach(function(x){var e=x[0],t=e.lastChild;e.classList.remove('on','off');
   if(!s){t.textContent=x[1]?'Status n/a':'Server status unavailable';return}
-  if(s.online){e.classList.add('on');t.textContent=x[1]?s.n+'/'+s.max+' online':'Server online · '+s.n+' of '+s.max+' players'}
+  if(s.online){e.classList.add('on');t.textContent=x[1]?s.n+' online':'Server online · '+s.n+(s.n===1?' player':' players')}
   else{e.classList.add('off');t.textContent=x[1]?'Offline':'Server offline'}})}
 function srvGet(u,f){return fetch(u).then(function(r){return r.ok?r.json():Promise.reject()}).then(function(j){return {online:!!j.online,n:j.players?j.players.online:0,max:j.players?j.players.max:0}})}
 function srvPoll(){srvGet('https://api.mcstatus.io/v2/status/java/'+SRV).catch(function(){return srvGet('https://api.mcsrvstat.us/3/'+SRV)}).then(srvShow,function(){srvShow(null)})}
