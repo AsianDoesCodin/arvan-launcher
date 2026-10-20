@@ -88,7 +88,7 @@ header.nav.stuck{background:rgba(4,11,13,.78);backdrop-filter:blur(14px);box-sha
 .hero h1.big{font-size:clamp(2rem,5vw,3.6rem);margin:6px 0 18px;text-shadow:0 4px 30px #000}
 .shimmer{background:linear-gradient(100deg,var(--gold2) 20%,#fff6cf 40%,var(--gold) 50%,var(--gold2) 80%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shim 5s linear infinite}
 @keyframes shim{to{background-position:-250% 0}}
-.rot{display:inline-block;position:relative;height:1.35em;line-height:1.35;vertical-align:bottom;overflow:hidden;min-width:7ch;color:var(--gold);font-weight:600}
+.rot{display:inline-block;position:relative;height:1.65em;line-height:1.65;vertical-align:top;overflow:hidden;min-width:7ch;color:var(--gold);font-weight:600}
 .rot span{position:absolute;left:0;top:0;white-space:nowrap;transform:translateY(110%);opacity:0;transition:transform .6s var(--ease),opacity .6s}
 .rot span.on{transform:none;opacity:1}.rot span.off{transform:translateY(-110%);opacity:0}
 .hero p.lead{font-size:1.18rem;color:#dbe8e1;max-width:540px;text-shadow:0 2px 12px #000;margin:0 0 30px}
@@ -256,7 +256,7 @@ footer a{color:var(--gold);text-decoration:none;margin:0 10px}footer a:hover{tex
 
 /* ---- art pass: static painted backgrounds, no moving effects ---- */
 body{background:#040b0d}
-body:before{content:"";position:fixed;inset:0;z-index:0;background:url(../media/bg-body.jpg?v=20261021d) center/cover no-repeat;opacity:.6;pointer-events:none}
+body:before{content:"";position:fixed;inset:0;z-index:0;background:url(../media/bg-body.jpg?v=20261021e) center/cover no-repeat;opacity:.6;pointer-events:none}
 body:after{content:"";position:fixed;inset:0;z-index:0;background:linear-gradient(180deg,rgba(4,11,13,.55),rgba(4,11,13,.8));pointer-events:none}
 #fx,#cursor,.fog,.glow{display:none!important}
 .stage{transform:translate(-50%,-50%)!important;will-change:auto}
@@ -265,7 +265,7 @@ body:after{content:"";position:fixed;inset:0;z-index:0;background:linear-gradien
 .card .art:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(11,29,33,.95))}
 .card .cb{padding:20px 24px 26px}
 .card:hover .art{filter:brightness(1.12)}
-.cta-band{background:linear-gradient(rgba(4,11,13,.72),rgba(4,11,13,.82)),url(../media/bg-cta-night.jpg?v=20261021d) center/cover no-repeat;border-block:1px solid rgba(236,202,120,.25)}
+.cta-band{background:linear-gradient(rgba(4,11,13,.72),rgba(4,11,13,.82)),url(../media/bg-cta-night.jpg?v=20261021e) center/cover no-repeat;border-block:1px solid rgba(236,202,120,.25)}
 .hero.small{min-height:62vh}
 @media (max-width:700px){.card .art{height:160px}}
 
