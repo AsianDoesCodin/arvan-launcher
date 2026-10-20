@@ -265,7 +265,7 @@ body:after{content:"";position:fixed;inset:0;z-index:0;background:linear-gradien
 .card .art:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(11,29,33,.95))}
 .card .cb{padding:20px 24px 26px}
 .card:hover .art{filter:brightness(1.12)}
-.cta-band{background:linear-gradient(rgba(4,11,13,.72),rgba(4,11,13,.82)),url(../media/bg-cta.jpg) center/cover no-repeat;border-block:1px solid rgba(236,202,120,.25)}
+.cta-band{background:linear-gradient(rgba(4,11,13,.72),rgba(4,11,13,.82)),url(../media/bg-cta-night.jpg) center/cover no-repeat;border-block:1px solid rgba(236,202,120,.25)}
 .hero.small{min-height:62vh}
 @media (max-width:700px){.card .art{height:160px}}
 
