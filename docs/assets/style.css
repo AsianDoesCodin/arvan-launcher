@@ -256,7 +256,7 @@ footer a{color:var(--gold);text-decoration:none;margin:0 10px}footer a:hover{tex
 
 /* ---- art pass: static painted backgrounds, no moving effects ---- */
 body{background:#040b0d}
-body:before{content:"";position:fixed;inset:0;z-index:0;background:url(../media/bg-body.jpg?v=20261021e) center/cover no-repeat;opacity:.6;pointer-events:none}
+body:before{content:"";position:fixed;inset:0;z-index:0;background:url(../media/bg-body.jpg?v=20261021f) center/cover no-repeat;opacity:.6;pointer-events:none}
 body:after{content:"";position:fixed;inset:0;z-index:0;background:linear-gradient(180deg,rgba(4,11,13,.55),rgba(4,11,13,.8));pointer-events:none}
 #fx,#cursor,.fog,.glow{display:none!important}
 .stage{transform:translate(-50%,-50%)!important;will-change:auto}
@@ -265,8 +265,19 @@ body:after{content:"";position:fixed;inset:0;z-index:0;background:linear-gradien
 .card .art:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(11,29,33,.95))}
 .card .cb{padding:20px 24px 26px}
 .card:hover .art{filter:brightness(1.12)}
-.cta-band{background:linear-gradient(rgba(4,11,13,.72),rgba(4,11,13,.82)),url(../media/bg-cta-night.jpg?v=20261021e) center/cover no-repeat;border-block:1px solid rgba(236,202,120,.25)}
+.cta-band{background:linear-gradient(rgba(4,11,13,.72),rgba(4,11,13,.82)),url(../media/bg-cta-night.jpg?v=20261021f) center/cover no-repeat;border-block:1px solid rgba(236,202,120,.25)}
 .hero.small{min-height:62vh}
 @media (max-width:700px){.card .art{height:160px}}
 
 #curtain{display:none!important}
+
+/* server status */
+.srv,.srvline{display:inline-flex;align-items:center;gap:8px;color:var(--mute);font-size:.88rem}
+.srv i,.srvline i{width:9px;height:9px;border-radius:50%;background:#6c7f78;flex:none}
+.srv.on i,.srvline.on i{background:var(--jade);animation:srvpulse 2.2s infinite}
+.srv.off i,.srvline.off i{background:#cf4034}
+.srv.on,.srvline.on{color:var(--text)}
+.links a.srv{padding:5px 12px;margin-left:6px;border:1px solid var(--line);border-radius:999px;background:rgba(7,19,23,.6);font-size:.82rem;letter-spacing:.02em}
+.links a.srv:after{display:none}
+.srvline{display:flex;margin-top:10px;font-size:.95rem}
+@keyframes srvpulse{0%{box-shadow:0 0 0 0 rgba(63,224,168,.55)}70%{box-shadow:0 0 0 8px rgba(63,224,168,0)}100%{box-shadow:0 0 0 0 rgba(63,224,168,0)}}
