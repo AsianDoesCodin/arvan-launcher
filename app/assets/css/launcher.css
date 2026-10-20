@@ -3971,7 +3971,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* ===================== Arvan RPG theme ===================== */
 :root { --arvan-navy: #0b1426; --arvan-navy2: #132140; --arvan-jade: #3fbf96; --arvan-jade-hi: #6fe0bb; --arvan-gold: #d9b45a; --arvan-gold-hi: #f0d68c; }
-body { background-image: url('../arvan/img/bg.webp') !important; background-color: var(--arvan-navy) !important; background-size: cover !important; background-position: center !important; }
+body { background-image: url('../arvan/img/bg.jpg') !important; background-color: var(--arvan-navy) !important; background-size: cover !important; background-position: center !important; }
 #frameBar { background-color: rgba(11, 20, 38, 0.85) !important; }
 #landingContainer { background: linear-gradient(180deg, rgba(11,20,38,0.35) 0%, rgba(11,20,38,0.05) 40%, rgba(11,20,38,0.85) 100%); }
 #loginContainer { background: radial-gradient(ellipse at center, rgba(11,20,38,0.55) 0%, rgba(11,20,38,0.88) 70%); }
