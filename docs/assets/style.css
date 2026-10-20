@@ -84,7 +84,7 @@ header.nav.stuck{background:rgba(4,11,13,.78);backdrop-filter:blur(14px);box-sha
 .hero .copy{max-width:640px}
 .eyebrow{display:inline-block;letter-spacing:.35em;text-transform:uppercase;font-size:.78rem;color:var(--jade);margin-bottom:14px;position:relative;padding-left:46px}
 .eyebrow:before{content:"";position:absolute;left:0;top:50%;width:34px;height:1px;background:var(--jade);box-shadow:0 0 8px var(--jade)}
-.word{width:min(560px,86vw);margin:0 0 6px -14px;filter:drop-shadow(0 8px 28px rgba(0,0,0,.8)) drop-shadow(0 0 24px rgba(63,224,168,.25));animation:float 7s ease-in-out infinite}
+.word{font:700 clamp(3.4rem,10vw,6.6rem)/1 Cinzel,Georgia,serif;letter-spacing:.14em;margin:0 0 10px -4px;background:linear-gradient(180deg,#f6e2a0 0%,#d9b45a 55%,#a9812f 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 24px rgba(0,0,0,.8)) drop-shadow(0 0 22px rgba(63,224,168,.22));animation:float 7s ease-in-out infinite}
 .hero h1.big{font-size:clamp(2rem,5vw,3.6rem);margin:6px 0 18px;text-shadow:0 4px 30px #000}
 .shimmer{background:linear-gradient(100deg,var(--gold2) 20%,#fff6cf 40%,var(--gold) 50%,var(--gold2) 80%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shim 5s linear infinite}
 @keyframes shim{to{background-position:-250% 0}}
@@ -256,7 +256,7 @@ footer a{color:var(--gold);text-decoration:none;margin:0 10px}footer a:hover{tex
 
 /* ---- art pass: static painted backgrounds, no moving effects ---- */
 body{background:#040b0d}
-body:before{content:"";position:fixed;inset:0;z-index:0;background:url(../media/bg-body.jpg?v=20261021b) center/cover no-repeat;opacity:.6;pointer-events:none}
+body:before{content:"";position:fixed;inset:0;z-index:0;background:url(../media/bg-body.jpg?v=20261021c) center/cover no-repeat;opacity:.6;pointer-events:none}
 body:after{content:"";position:fixed;inset:0;z-index:0;background:linear-gradient(180deg,rgba(4,11,13,.55),rgba(4,11,13,.8));pointer-events:none}
 #fx,#cursor,.fog,.glow{display:none!important}
 .stage{transform:translate(-50%,-50%)!important;will-change:auto}
@@ -265,7 +265,7 @@ body:after{content:"";position:fixed;inset:0;z-index:0;background:linear-gradien
 .card .art:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(11,29,33,.95))}
 .card .cb{padding:20px 24px 26px}
 .card:hover .art{filter:brightness(1.12)}
-.cta-band{background:linear-gradient(rgba(4,11,13,.72),rgba(4,11,13,.82)),url(../media/bg-cta-night.jpg?v=20261021b) center/cover no-repeat;border-block:1px solid rgba(236,202,120,.25)}
+.cta-band{background:linear-gradient(rgba(4,11,13,.72),rgba(4,11,13,.82)),url(../media/bg-cta-night.jpg?v=20261021c) center/cover no-repeat;border-block:1px solid rgba(236,202,120,.25)}
 .hero.small{min-height:62vh}
 @media (max-width:700px){.card .art{height:160px}}
 
