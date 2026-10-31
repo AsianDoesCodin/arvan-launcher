@@ -299,3 +299,29 @@ body:after{content:"";position:fixed;inset:0;z-index:0;background:linear-gradien
   .links a.srv{margin-left:0;align-self:flex-start;margin-bottom:8px}
   .links a.dc,.links a.cta{margin-left:0}
 }
+
+/* patch notes */
+.pnjump{justify-content:flex-start;margin-bottom:34px}
+.pnjump .chip{text-decoration:none;padding:7px 18px;font-size:.85rem}
+.pnlist{max-width:880px;position:relative;padding-left:34px}
+.pnlist:before{content:"";position:absolute;left:9px;top:10px;bottom:10px;width:2px;background:linear-gradient(180deg,var(--gold),var(--jade2) 40%,rgba(35,65,63,.4))}
+.pn{position:relative;background:rgba(11,29,33,.78);border:1px solid var(--line);border-radius:14px;padding:26px 30px 22px;margin:0 0 26px}
+.pn:before{content:"";position:absolute;left:-31px;top:30px;width:12px;height:12px;background:var(--bg);border:2px solid var(--jade);transform:rotate(45deg)}
+.pn.latest{border-color:var(--gold2);box-shadow:0 0 0 1px rgba(236,202,120,.12),0 18px 50px rgba(0,0,0,.35)}
+.pn.latest:before{background:var(--gold);border-color:var(--gold);box-shadow:0 0 12px var(--gold)}
+.pnhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pnhead time{font:600 .8rem Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--jade)}
+.pntag{font:600 .7rem Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#0b1411;background:linear-gradient(180deg,var(--gold),var(--gold2));padding:3px 10px;border-radius:999px}
+.pn h2{font-size:clamp(1.35rem,2.6vw,1.85rem);color:var(--gold);margin:8px 0 6px}
+.pn h3{font:600 .76rem Inter,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin:18px 0 8px}
+.pn ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.pn li{position:relative;padding-left:24px;color:#c7d8d0}
+.pn li:before{content:"";position:absolute;left:4px;top:.66em;width:7px;height:7px;background:var(--jade);transform:rotate(45deg);box-shadow:0 0 8px var(--jade)}
+.pn li b{color:var(--text);font-weight:600}
+.pn.solo:before{display:none}
+.pnmore{display:inline-block;margin-top:18px;font-weight:600;text-decoration:none}
+.pnmore:hover{text-decoration:underline}
+@media (max-width:640px){.pnlist{padding-left:22px}.pnlist:before{left:4px}.pn{padding:20px 18px 18px}.pn:before{left:-24px;width:10px;height:10px}}
+/* nav: keep one line between the burger breakpoint and full width */
+.links a{white-space:nowrap}
+@media (min-width:981px) and (max-width:1200px){.links{gap:2px}.links a{padding:8px 9px;font-size:.88rem}.links a:not(.cta):after{left:9px;right:9px}.links a.srv{padding:5px 10px}.links a.dc{padding:4px 4px}.links a.dc svg{width:26px}}
