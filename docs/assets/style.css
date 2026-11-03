@@ -325,3 +325,5 @@ body:after{content:"";position:fixed;inset:0;z-index:0;background:linear-gradien
 /* nav: keep one line between the burger breakpoint and full width */
 .links a{white-space:nowrap}
 @media (min-width:981px) and (max-width:1200px){.links{gap:2px}.links a{padding:8px 9px;font-size:.88rem}.links a:not(.cta):after{left:9px;right:9px}.links a.srv{padding:5px 10px}.links a.dc{padding:4px 4px}.links a.dc svg{width:26px}}
+/* nav: Leaderboards link (2026-11-03) makes 8 links, so tighten a little more */
+@media (min-width:981px) and (max-width:1320px){.nav .wrap{gap:12px}.links a{padding:8px 7px;font-size:.86rem}.links a:not(.cta):after{left:7px;right:7px}}

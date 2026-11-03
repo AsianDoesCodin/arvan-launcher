@@ -1,0 +1,65 @@
+name: Leaderboards
+
+# Pulls the live leaderboards export from the game server every hour and commits docs/data/leaderboards.json when it changed.
+# Set the repo variable LEADERBOARD_PORT (Settings > Secrets and variables > Actions > Variables) to the Server Core web port.
+# If the variable is unset, the server is down or the file is bad, the run ends green and the last committed file stays.
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: leaderboards
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch from the game server
+        id: fetch
+        env:
+          PORT: ${{ vars.LEADERBOARD_PORT }}
+        run: |
+          if [ -z "$PORT" ]; then echo "::notice::LEADERBOARD_PORT is not set; keeping the last file."; exit 0; fi
+          if ! curl -fsS --max-time 20 --retry 2 --retry-delay 5 --max-filesize 1000000 -o /tmp/lb.json "http://139.99.4.216:${PORT}/leaderboards.json"; then
+            echo "::warning::Game server did not answer; keeping the last file."; exit 0
+          fi
+          if ! node -e '
+            const j = JSON.parse(require("fs").readFileSync("/tmp/lb.json", "utf8"));
+            const ok = j && typeof j.updated === "string" && !isNaN(Date.parse(j.updated))
+              && Array.isArray(j.level) && Array.isArray(j.guild) && Array.isArray(j.firsts)
+              && j.dungeons && typeof j.dungeons === "object" && !Array.isArray(j.dungeons);
+            if (!ok) process.exit(1);
+          '; then
+            echo "::warning::The server sent a file that is not a leaderboards export; keeping the last file."; exit 0
+          fi
+          echo "ok=1" >> "$GITHUB_OUTPUT"
+
+      - name: Commit if changed
+        if: steps.fetch.outputs.ok == '1'
+        run: |
+          mkdir -p docs/data
+          # The export restamps "updated" every 5 min, so rows decide. A stamp-only change is still committed once it is 6 h old,
+          # so the page's "updated N ago" never looks dead on a quiet server.
+          node -e '
+            const fs = require("fs"), f = "docs/data/leaderboards.json", nu = JSON.parse(fs.readFileSync("/tmp/lb.json", "utf8"));
+            let old = null; try { old = JSON.parse(fs.readFileSync(f, "utf8")) } catch (e) {}
+            const rows = j => JSON.stringify(Object.assign({}, j, { updated: 0 }));
+            const fresh = old && Date.parse(nu.updated) - Date.parse(old.updated) < 6 * 3600e3;
+            if (old && rows(old) === rows(nu) && fresh) process.exit(0);
+            fs.writeFileSync(f, JSON.stringify(nu, null, 1) + "\n");
+          '
+          if git diff --quiet -- docs/data/leaderboards.json; then echo "No change."; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/leaderboards.json
+          git commit -m "Leaderboards: hourly update"
+          git push || echo "::warning::Push failed (a newer commit landed?); the next run retries."
