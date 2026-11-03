@@ -16,42 +16,153 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css?v=20261103a">
 <style>
-.lbx{max-width:880px;margin:0 auto}
-.lbx .chips{margin-bottom:18px}
-.lbx .tab{background:rgba(11,29,33,.8);border:1px solid var(--line);color:var(--text);padding:9px 22px;border-radius:999px;cursor:pointer;font:600 .9rem Inter,sans-serif;letter-spacing:.06em;transition:border-color .3s}
-.lbx .tab:hover{border-color:var(--gold2)}.lbx .tab.on{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#0b1411;border-color:var(--gold)}
-.lbx .sub{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:0 0 22px}
-.lbx .sub .tab{padding:6px 15px;font-size:.8rem}
-.lbx .upd{text-align:center;color:var(--mute);font-size:.85rem;margin:-6px 0 26px}
-.lbx .upd.old{color:var(--gold)}
-.lbt{width:100%;border-collapse:separate;border-spacing:0;background:rgba(11,29,33,.72);border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:.95rem}
-.lbt th{font:600 .72rem Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);text-align:left;padding:13px 14px;background:rgba(15,42,46,.85);border-bottom:1px solid var(--line)}
-.lbt td{padding:11px 14px;border-bottom:1px solid rgba(35,65,63,.55);vertical-align:middle}
+.hero.small{min-height:44vh}
+.hero.small .wrap{padding-bottom:40px}
+.lbx{max-width:1120px;margin:0 auto}
+/* tab bar: underline tabs, distinct from the small segmented toggle */
+.lbbar{display:flex;align-items:flex-end;gap:16px;border-bottom:1px solid var(--line);margin:0 0 38px}
+.lbtabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0}
+.lbtabs::-webkit-scrollbar{display:none}
+.lbx .tab{background:none;border:0;color:var(--mute);font:600 .8rem Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;padding:15px 16px 14px;cursor:pointer;position:relative;white-space:nowrap;transition:color .2s}
+.lbx .tab:after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:2px;background:linear-gradient(90deg,var(--jade),var(--gold));transform:scaleX(0);transition:transform .3s var(--ease)}
+.lbx .tab:hover{color:var(--text)}.lbx .tab.on{color:var(--gold)}.lbx .tab.on:after{transform:none}
+.upd{font-size:.76rem;color:var(--mute);padding:0 0 15px;white-space:nowrap}
+.upd i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--jade);margin-right:7px;box-shadow:0 0 8px var(--jade);vertical-align:1px}
+.upd.old i{background:var(--gold2);box-shadow:none}
+[data-pane]{display:none}[data-pane].on{display:block;animation:lbin .45s var(--ease)}
+@keyframes lbin{from{opacity:0;transform:translateY(8px)}}
+.ph{margin:0 0 40px}
+.ph h2{font:700 clamp(1.5rem,3vw,2.1rem) Cinzel,serif;color:var(--gold);margin:0}
+.ph p{color:var(--mute);margin:6px 0 0}
+.sh{font:700 1.3rem Cinzel,serif;color:var(--gold);margin:0 0 16px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.sh small{font:500 .8rem Inter,sans-serif;color:var(--mute)}
+/* class icons (wiki skill art) */
+.ci{width:30px;height:30px;flex:none;border-radius:8px;border:1px solid var(--line);background:rgba(4,11,13,.75);padding:3px;object-fit:contain;vertical-align:middle;display:inline-block}
+.ci.px{image-rendering:pixelated}
+.ci.big{width:64px;height:64px;border-radius:14px;padding:7px}
+.ci.none{position:relative}
+.ci.none:after{content:"?";position:absolute;inset:0;display:grid;place-items:center;font:700 1rem Cinzel,serif;color:var(--line)}
+.ci.big.none:after{font-size:1.7rem}
+/* podium */
+.podium{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:end;margin:26px 0 22px}
+.pd{--m:#cfd8dc;--mg:rgba(207,216,220,.35);position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:34px 18px 24px;border-radius:16px;background:linear-gradient(170deg,rgba(15,42,46,.96),rgba(7,19,23,.96));border:1px solid var(--line);min-width:0}
+.pd:before{content:"";position:absolute;inset:0 0 auto;height:3px;border-radius:16px 16px 0 0;background:var(--m)}
+.pd.p1{order:2;--m:var(--gold);--mg:rgba(236,202,120,.45);padding:46px 20px 32px;border-color:rgba(236,202,120,.5);box-shadow:0 26px 60px rgba(0,0,0,.45),0 0 60px rgba(236,202,120,.08);background:radial-gradient(90% 60% at 50% 0%,rgba(236,202,120,.13),transparent 70%),linear-gradient(170deg,rgba(15,42,46,.96),rgba(7,19,23,.96))}
+.pd.p2{order:1}.pd.p3{order:3;--m:#d39a62;--mg:rgba(211,154,98,.35)}
+.medal{position:absolute;top:-18px;left:50%;transform:translateX(-50%);width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font:700 1.05rem Cinzel,serif;color:#0b1411;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.55),transparent 50%),var(--m);box-shadow:0 0 0 4px var(--bg),0 0 18px var(--mg)}
+.pd .ci.big{margin:0 0 8px;border-color:var(--mg)}
+.pd .pnm{min-width:0;max-width:100%}
+.pd h3{font:700 1.2rem Cinzel,serif;color:var(--text);margin:0;overflow-wrap:anywhere}
+.pd.p1 h3{font-size:1.45rem}
+.pd .pc{color:var(--mute);font-size:.85rem;margin:3px 0 0}
+.pd .pvw{margin-top:12px}
+.pd .pv{font:700 1.6rem Cinzel,serif;color:var(--m);font-variant-numeric:tabular-nums;line-height:1.1}
+.pd.p1 .pv{font-size:2.1rem}
+.pd .pe{margin-top:8px;color:var(--mute);font-size:.82rem}
+.pd.ghost{background:rgba(11,29,33,.42);border-color:rgba(35,65,63,.65);box-shadow:none}
+.pd.ghost:before{opacity:.35}
+.pd.ghost .medal{opacity:.55}
+.pd.ghost h3{color:#6f8a82;font-size:1.05rem;letter-spacing:.12em;text-transform:uppercase}
+.pd.ghost .pc{color:#5f7a72}
+.how{text-align:center;color:var(--mute);margin:0 0 34px;font-size:.95rem}
+.how b{color:var(--gold);font-weight:600}
+/* table, rows 4+ */
+.lbt{width:100%;border-collapse:separate;border-spacing:0;background:rgba(11,29,33,.72);border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:.93rem}
+.lbt th{font:600 .7rem Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);text-align:left;padding:12px 14px;background:rgba(15,42,46,.85);border-bottom:1px solid var(--line)}
+.lbt td{padding:10px 14px;border-bottom:1px solid rgba(35,65,63,.55);vertical-align:middle}
 .lbt tr:last-child td{border-bottom:0}
 .lbt tbody tr:hover td{background:rgba(63,224,168,.05)}
-.lbt .r{width:52px;text-align:center;font:700 1rem Cinzel,serif;color:var(--mute)}
+.lbt tr.sp td{background:rgba(236,202,120,.06)}
+.lbt .r{width:50px;text-align:center;font:700 .95rem Cinzel,serif;color:var(--mute)}
 .lbt .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.lbt tr.top1 .r{color:var(--gold)}.lbt tr.top2 .r{color:#d6dde0}.lbt tr.top3 .r{color:#d39a62}
-.lbt tr.top1 td{background:rgba(236,202,120,.07)}
-.lbt .nm{font-weight:600;color:var(--text);word-break:break-word}
-.lbt .cl{color:var(--mute)}
-.lbt .nm small{display:none;color:var(--mute);font-weight:400}
-.rk{display:inline-block;min-width:28px;text-align:center;padding:2px 8px;border-radius:7px;border:1px solid var(--line);font:700 .8rem Inter,sans-serif;color:var(--jade)}
-.rk.none{color:var(--mute);border-color:transparent}
+.lbt .nm{font-weight:600;overflow-wrap:anywhere}
+.lbt .nm .ci{margin-right:10px;width:28px;height:28px}
+.lbt .cl,.lbt .dt2{color:var(--mute)}
+.rk{display:inline-block;min-width:28px;text-align:center;padding:2px 8px;border-radius:7px;border:1px solid var(--jade2);font:700 .8rem Inter,sans-serif;color:var(--jade);background:rgba(63,224,168,.06)}
+.rk.none{color:var(--mute);border-color:transparent;background:none}
+.pd .rk{font-size:1.25rem;padding:4px 14px;border-radius:10px;font-family:Cinzel,serif}
 .gr{display:inline-block;min-width:34px;text-align:center;padding:2px 8px;border-radius:7px;font:700 .8rem Inter,sans-serif;border:1px solid var(--line);color:var(--mute)}
-.gr.g-Sp{color:#0b1411;background:linear-gradient(180deg,var(--gold),var(--gold2));border-color:var(--gold)}
+.gr.g-Sp{color:#0b1411;background:linear-gradient(180deg,#fbe3a4,var(--gold) 45%,var(--gold2));border-color:var(--gold);box-shadow:0 0 14px rgba(236,202,120,.45)}
 .gr.g-S{color:var(--gold);border-color:var(--gold2)}.gr.g-A{color:var(--jade);border-color:var(--jade2)}
-.lbx .empty{text-align:center;color:var(--mute);padding:34px 14px;background:rgba(11,29,33,.6);border:1px dashed var(--line);border-radius:14px}
-.lbx h3.dn{font:700 1.25rem Cinzel,serif;color:var(--gold);text-align:center;margin:0 0 14px}
-.lbx .note{text-align:center;color:var(--mute);font-size:.82rem;margin-top:16px}
-.lbx [data-pane]{display:none}.lbx [data-pane].on{display:block}
+/* hall of champions */
+.champ{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:0 0 50px}
+.cc{position:relative;display:flex;gap:16px;align-items:center;padding:22px;border-radius:16px;background:linear-gradient(160deg,rgba(15,42,46,.94),rgba(7,19,23,.94));border:1px solid var(--line);overflow:hidden;min-width:0;cursor:pointer;transition:transform .25s var(--ease),border-color .25s}
+.cc:hover{transform:translateY(-3px);border-color:var(--gold2)}
+.cc:after{content:"";position:absolute;right:-40px;top:-40px;width:130px;height:130px;border-radius:50%;background:radial-gradient(rgba(236,202,120,.16),transparent 70%)}
+.cc .cb{min-width:0}
+.cc .k{font:600 .68rem Inter,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--jade)}
+.cc h3{font:700 1.3rem Cinzel,serif;color:var(--gold);margin:4px 0 3px;overflow-wrap:anywhere}
+.cc p{margin:0;color:var(--mute);font-size:.86rem}
+.cc .crest{width:64px;height:64px;flex:none;border-radius:14px;display:grid;place-items:center;font:700 1.5rem Cinzel,serif;color:var(--gold);border:1px solid rgba(236,202,120,.35);background:rgba(4,11,13,.75)}
+.cc.ghost{cursor:default}.cc.ghost:hover{transform:none;border-color:var(--line)}.cc.ghost:after{opacity:.3}
+.cc.ghost h3{color:#6f8a82;font-size:1rem;letter-spacing:.12em;text-transform:uppercase}
+.cc.ghost .crest{color:var(--line);border-color:var(--line)}
+/* dungeon tiles (themed per dungeon) */
+.drec{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.dt{--dc:63,224,168;position:relative;text-align:left;cursor:pointer;padding:18px 18px 16px;border-radius:14px;border:1px solid rgba(var(--dc),.28);background:radial-gradient(120% 100% at 100% 0%,rgba(var(--dc),.26),transparent 62%),linear-gradient(160deg,rgba(15,42,46,.96),rgba(7,19,23,.96));color:var(--text);font:inherit;overflow:hidden;transition:transform .25s var(--ease),border-color .25s}
+.dt:hover{transform:translateY(-3px);border-color:rgba(var(--dc),.75)}
+.rn{position:absolute;right:14px;top:2px;font:700 3.6rem Cinzel,serif;color:rgba(var(--dc),.16);line-height:1;pointer-events:none}
+.tl{font:600 .66rem Inter,sans-serif;letter-spacing:.15em;text-transform:uppercase;color:rgb(var(--dc))}
+.dt h4{font:700 1.08rem Cinzel,serif;margin:4px 0 14px;position:relative}
+.rec{display:flex;align-items:center;gap:10px;position:relative}
+.rec b{font:700 1.3rem Cinzel,serif;font-variant-numeric:tabular-nums}
+.rec .open{font:600 .74rem Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#7d978f;border:1px solid rgba(35,65,63,.9);border-radius:7px;padding:4px 10px}
+.dt .who{color:var(--mute);font-size:.82rem;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative}
+/* dungeons pane */
+.dwrap{display:grid;grid-template-columns:272px minmax(0,1fr);gap:28px;align-items:start}
+.rail{display:flex;flex-direction:column;gap:6px;position:sticky;top:92px}
+.rail button{--dc:63,224,168;display:grid;grid-template-columns:1fr auto;gap:1px 10px;text-align:left;padding:11px 14px 11px 13px;border-radius:12px;border:1px solid transparent;border-left:3px solid rgba(var(--dc),.55);background:rgba(11,29,33,.55);color:var(--text);cursor:pointer;font:inherit;transition:background .2s,border-color .2s}
+.rail button:hover{background:rgba(11,29,33,.9)}
+.rail button.on{background:linear-gradient(90deg,rgba(var(--dc),.2),rgba(11,29,33,.85));border-color:rgba(var(--dc),.5);border-left-color:rgb(var(--dc))}
+.rail .nm{font-weight:600;font-size:.92rem}
+.rail .lv{font-size:.72rem;color:var(--mute);letter-spacing:.05em}
+.rail .rt{grid-row:1/3;grid-column:2;align-self:center;font:700 .95rem Cinzel,serif;font-variant-numeric:tabular-nums}
+.rail .rt.open{font:600 .64rem Inter,sans-serif;color:#7d978f;letter-spacing:.12em;text-transform:uppercase}
+.dsel{display:none;width:100%;margin:0 0 16px;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:#0b1d21;color:var(--text);font:600 .95rem Inter,sans-serif}
+.dhead{--dc:63,224,168;position:relative;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:30px 28px 26px;border-radius:16px;margin:0 0 34px;overflow:hidden;border:1px solid rgba(var(--dc),.38);background:radial-gradient(80% 150% at 100% 0%,rgba(var(--dc),.36),transparent 62%),repeating-linear-gradient(135deg,rgba(255,255,255,.012) 0 2px,transparent 2px 9px),linear-gradient(160deg,#0f2a2e,#071317)}
+.dhead .rn{font-size:6.5rem;top:-6px;right:22px}
+.dhead h2{font:700 clamp(1.5rem,3vw,2.2rem) Cinzel,serif;margin:6px 0 0;color:var(--text);position:relative}
+.dhead p{margin:4px 0 0;color:var(--mute);font-size:.88rem;position:relative}
+.seg{position:relative;display:inline-flex;padding:3px;border-radius:10px;background:rgba(4,11,13,.75);border:1px solid var(--line)}
+.seg button{background:none;border:0;color:var(--mute);font:600 .74rem Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;padding:7px 15px;border-radius:7px;cursor:pointer}
+.seg button.on{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#0b1411}
+/* server firsts */
+.tline{position:relative;padding-left:30px;margin:0 0 46px;max-width:780px}
+.tline:before{content:"";position:absolute;left:8px;top:8px;bottom:8px;width:1px;background:linear-gradient(var(--gold2),var(--line))}
+.fi{position:relative;display:flex;justify-content:space-between;align-items:baseline;gap:6px 14px;flex-wrap:wrap;padding:14px 18px;margin:0 0 12px;border-radius:12px;background:rgba(11,29,33,.75);border:1px solid var(--line)}
+.fi:before{content:"";position:absolute;left:-27px;top:19px;width:10px;height:10px;background:var(--bg);border:2px solid var(--jade);transform:rotate(45deg)}
+.fi.latest{border-color:var(--gold2);box-shadow:0 14px 40px rgba(0,0,0,.3)}
+.fi.latest:before{background:var(--gold);border-color:var(--gold);box-shadow:0 0 12px var(--gold)}
+.fi h4{font:600 1rem Inter,sans-serif;margin:0;color:var(--text)}
+.fi .nm{color:var(--gold);font-weight:600}
+.fi time{font:600 .72rem Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--jade)}
+.grab{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.grab div{display:flex;gap:11px;align-items:center;padding:12px 14px;border-radius:10px;border:1px solid rgba(35,65,63,.75);background:rgba(11,29,33,.45);color:#c7d8d0;font-size:.88rem}
+.grab div:before{content:"";width:8px;height:8px;flex:none;transform:rotate(45deg);border:1.5px solid var(--gold2)}
+.lbnote{text-align:center;color:var(--mute);font-size:.8rem;margin:46px 0 0}
+@media (max-width:900px){
+  .champ{grid-template-columns:1fr}
+  .dwrap{grid-template-columns:minmax(0,1fr)}
+  .rail{display:none}.dsel{display:block}
+}
 @media (max-width:640px){
-  .lbt{font-size:.88rem}
-  .lbt th,.lbt td{padding:10px 8px}
-  .lbt .r{width:34px}
-  .lbt .cl{display:none}
-  .lbt .nm small{display:block}
-  .lbx .chips .tab{padding:8px 14px;font-size:.82rem}
+  .lbbar{flex-direction:column;align-items:stretch;gap:0;margin-bottom:28px}
+  .upd{padding:10px 2px 0;order:2}
+  .lbx .tab{padding:13px 10px 12px;letter-spacing:.1em;font-size:.74rem}
+  .podium{grid-template-columns:1fr;gap:10px;margin-top:6px}
+  .pd,.pd.p1{order:0;flex-direction:row;text-align:left;gap:12px;padding:14px 16px}
+  .pd .medal{position:static;transform:none;flex:none;width:30px;height:30px;font-size:.92rem;box-shadow:0 0 12px var(--mg)}
+  .pd .ci.big{width:46px;height:46px;margin:0;padding:5px;border-radius:11px}
+  .pd .pnm{flex:1}
+  .pd h3,.pd.p1 h3{font-size:1.05rem}
+  .pd .pvw{margin:0 0 0 auto;text-align:right;flex:none}
+  .pd .pv,.pd.p1 .pv{font-size:1.25rem}
+  .pd .pe{margin-top:4px}
+  .pd.ghost h3{font-size:.85rem}
+  .lbt{font-size:.86rem}.lbt th,.lbt td{padding:9px 8px}.lbt .r{width:32px}
+  .lbt .cl,.lbt .dt2{display:none}
+  .dhead{padding:22px 18px 18px}.dhead .rn{font-size:4.5rem}
+  .cc{padding:16px}
 }
 </style>
 </head>
@@ -64,22 +175,26 @@
 </div></header>
 <main>
 
+
 <header class="hero small">
   <div class="stage"><img src="media/head-world.jpg?v=20261021i" alt=""></div>
   <div class="wrap"><div class="in"><span class="eyebrow">Leaderboards</span><h1 class="shimmer">Hall of Heroes</h1><p>The highest levels, the fastest dungeon clears, the top guild ranks and every server first on Arvan.</p></div></div>
 </header>
 
-<section style="padding-top:44px"><div class="wrap lbx">
-  <div class="chips" role="tablist">
-    <button class="tab on" data-tab="level" role="tab">Level</button><button class="tab" data-tab="dungeons" role="tab">Dungeons</button><button class="tab" data-tab="guild" role="tab">Guild</button><button class="tab" data-tab="firsts" role="tab">Server firsts</button>
+<section style="padding-top:40px"><div class="wrap lbx">
+  <div class="lbbar">
+    <div class="lbtabs" role="tablist"><button class="tab on" data-tab="champions" role="tab">Hall of Champions</button><button class="tab" data-tab="level" role="tab">Level</button><button class="tab" data-tab="guild" role="tab">Guild</button><button class="tab" data-tab="dungeons" role="tab">Dungeons</button><button class="tab" data-tab="firsts" role="tab">Server firsts</button></div>
+    <div class="upd" id="upd" hidden></div>
   </div>
-  <p class="upd" id="upd">Loading the leaderboards...</p>
 
-  <div data-pane="level" class="on"></div>
-  <div data-pane="dungeons"><div class="sub" id="dsel"></div><div class="sub" id="msel"><button class="tab on" data-mode="normal">Normal</button><button class="tab" data-mode="master">Master</button></div><div id="dtab"></div></div>
+  <div data-pane="champions" class="on"><p class="how">Loading the leaderboards...</p></div>
+  <div data-pane="level"></div>
   <div data-pane="guild"></div>
+  <div data-pane="dungeons">
+    <div class="dwrap"><nav class="rail" id="rail" aria-label="Dungeons"></nav><div><select class="dsel" id="dsel" aria-label="Dungeon"></select><div id="dmain"></div></div></div>
+  </div>
   <div data-pane="firsts"></div>
-  <p class="note">Updated every hour from the live server. Characters only; staff test characters are left out.</p>
+  <p class="lbnote">Updated every hour from the live server. Characters only; staff test characters are left out.</p>
 </div></section>
 
 </main>
@@ -94,55 +209,107 @@
 <script src="assets/app.js?v=20261021i"></script>
 <script>
 (function(){
-var D=null,tab='level',dun=null,mode='normal';
+var D=null,tab='champions',dun=null,mode='normal';
+// tier, level band and theme colour per dungeon (arvan_dungeon.js DEFAULTS.dungeons); unknown ids still render
+var DG={goblin_warren:{t:6,lv:'80–99',c:'111,176,84'},orc_hold:{t:7,lv:'100–112',c:'206,104,62'},creepy_mansion:{t:7,lv:'112–118',c:'156,110,214'},monster_pyramid:{t:8,lv:'134–144',c:'226,184,92'},corrupted_monastery:{t:9,lv:'146–154',c:'206,66,90'},overgrown_sanctum:{t:10,lv:'164–178',c:'72,196,132'},frozen_depths:{t:11,lv:'184–200',c:'112,196,236'}};
+var ROMAN=['','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+// class art = each class's signature skill icon from the wiki
+var CI={duelist:'warrior_dance_of_blades',reaver:'warrior_heaven_splitter',paladin:'warrior_divine_shield',flame:'wizzard_burning_dash',ice:'wizzard_ice_block',priest:'wizzard_greater_heal'};
+var RANKS=['E','D','C','B','A','S'];
 function q(s){return document.querySelector(s)}
 function qa(s){return Array.prototype.slice.call(document.querySelectorAll(s))}
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function arr(v){return Array.isArray(v)?v:[]}
 function n(v){return (Number(v)||0).toLocaleString('en-US')}
+function icon(c,big){var k=String(c||'').toLowerCase().split(/[\s_]/)[0],f=CI[k],cl='ci'+(big?' big':'');
+  return f?'<img class="'+cl+(f.indexOf('wizzard')===0?' px':'')+'" src="wiki/img/s/'+f+'.png" alt="" loading="lazy">':'<span class="'+cl+' none"></span>'}
 function rank(r){return r?'<span class="rk">'+esc(r)+'</span>':'<span class="rk none">&ndash;</span>'}
 function grade(g){var k=String(g||'');return '<span class="gr g-'+(k==='S+'?'Sp':esc(k))+'">'+esc(k||'-')+'</span>'}
 function time(s){s=Math.max(0,Math.round(Number(s)||0));var m=Math.floor(s/60),x=s%60;return m+':'+(x<10?'0':'')+x}
 function day(d){var t=Date.parse(d);return isNaN(t)?esc(d):new Date(t).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'})}
-function cls(i){return i<3?' class="top'+(i+1)+'"':''}
-function empty(t){return '<div class="empty">'+t+'</div>'}
-function table(head,rows){return '<table class="lbt"><thead><tr>'+head+'</tr></thead><tbody>'+rows.join('')+'</tbody></table>'}
-function who(name,sub){return '<td class="nm">'+esc(name)+(sub?'<small>'+esc(sub)+'</small>':'')+'</td>'}
+function dmap(){return D&&D.dungeons&&typeof D.dungeons==='object'&&!Array.isArray(D.dungeons)?D.dungeons:{}}
+function dmeta(id){return DG[id]||{t:0,lv:'',c:'63,224,168'}}
+function dname(id){var d=dmap()[id];return (d&&d.name)||id}
+function party(r){return arr(r.players).map(esc).join(', ')}
+function anyRows(){if(arr(D.level).length||arr(D.guild).length||arr(D.firsts).length)return true;var M=dmap();return Object.keys(M).some(function(k){return arr(M[k].normal).length||arr(M[k].master).length})}
 
-function level(){var L=arr(D.level);if(!L.length)return empty('No characters yet.');
-  return table('<th class="r">#</th><th>Character</th><th class="cl">Class</th><th>Guild</th><th class="num">Level</th>',L.map(function(p,i){
-    return '<tr'+cls(i)+'><td class="r">'+esc(p.rank||i+1)+'</td>'+who(p.name,p['class'])+'<td class="cl">'+esc(p['class'])+'</td><td>'+rank(p.guildRank)+'</td><td class="num">Lv '+esc(p.level)+'</td></tr>'}))}
-function guild(){var L=arr(D.guild);if(!L.length)return empty('Nobody has joined the guild yet.');
-  return table('<th class="r">#</th><th>Character</th><th class="cl">Class</th><th>Rank</th><th class="num">Points</th>',L.map(function(p,i){
-    return '<tr'+cls(i)+'><td class="r">'+esc(p.rank||i+1)+'</td>'+who(p.name,p['class'])+'<td class="cl">'+esc(p['class'])+'</td><td>'+rank(p.guildRank)+'</td><td class="num">'+n(p.points)+'</td></tr>'}))}
-function firsts(){var L=arr(D.firsts).slice().sort(function(a,b){return String(b.date).localeCompare(String(a.date))});if(!L.length)return empty('No server firsts yet. Be the first!');
-  return table('<th>Achievement</th><th>Hero</th><th class="num">Date</th>',L.map(function(f,i){
-    return '<tr'+(i===0?' class="top1"':'')+'><td>'+esc(f.what)+'</td><td class="nm">'+arr(f.names).map(esc).join(', ')+'</td><td class="num">'+day(f.date)+'</td></tr>'}))}
-function dungeons(){var M=D.dungeons&&typeof D.dungeons==='object'?D.dungeons:{},ids=Object.keys(M);
-  if(!ids.length){q('#dsel').innerHTML='';q('#msel').style.display='none';q('#dtab').innerHTML=empty('No dungeon clears yet.');return}
-  q('#msel').style.display='';if(ids.indexOf(dun)<0)dun=ids[0];
-  q('#dsel').innerHTML=ids.map(function(id){return '<button class="tab'+(id===dun?' on':'')+'" data-d="'+esc(id)+'">'+esc(M[id].name||id)+'</button>'}).join('');
-  qa('#msel .tab').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-mode')===mode)});
-  var d=M[dun],L=arr(d[mode]);
-  q('#dtab').innerHTML='<h3 class="dn">'+esc(d.name||dun)+(mode==='master'?' &middot; Master':'')+'</h3>'+(!L.length?empty(mode==='master'?'No Master clears yet.':'No clears yet.'):
-    table('<th class="r">#</th><th>Party</th><th>Grade</th><th class="num">Time</th><th class="num cl">Date</th>',L.map(function(r,i){
-      return '<tr'+cls(i)+'><td class="r">'+esc(r.rank||i+1)+'</td>'+who(arr(r.players).join(', '),day(r.date))+'<td>'+grade(r.grade)+'</td><td class="num">'+time(r.seconds)+'</td><td class="num cl">'+day(r.date)+'</td></tr>'})))}
+/* podium: 3 cards, ghosts for open spots */
+function podium(L,stat,how){var h='<div class="podium">';
+  for(var i=0;i<3;i++){var p=L[i],c=' p'+(i+1);
+    if(!p){h+='<article class="pd ghost'+c+'"><div class="medal">'+(i+1)+'</div><span class="ci big none"></span><div class="pnm"><h3>Unclaimed</h3><p class="pc">'+(i===0?'The top spot is open':'Open spot')+'</p></div></article>';continue}
+    var s=stat(p);h+='<article class="pd'+c+'"><div class="medal">'+(i+1)+'</div>'+s.icon+'<div class="pnm"><h3>'+s.name+'</h3><p class="pc">'+s.sub+'</p></div><div class="pvw"><div class="pv">'+s.value+'</div>'+(s.extra?'<div class="pe">'+s.extra+'</div>':'')+'</div></article>'}
+  return h+'</div>'+(L.length?'':'<p class="how">'+how+'</p>')}
+function table(head,rows){return rows.length?'<table class="lbt"><thead><tr>'+head+'</tr></thead><tbody>'+rows.join('')+'</tbody></table>':''}
+function ph(t,p){return '<div class="ph"><h2>'+t+'</h2><p>'+p+'</p></div>'}
 
-function ago(){var e=q('#upd'),t=D&&Date.parse(D.updated);if(!t||isNaN(t)){e.textContent='';return}
+var LV=function(p){return {icon:icon(p['class'],1),name:esc(p.name),sub:esc(p['class']),value:'Lv '+esc(p.level),extra:p.guildRank?'Guild rank '+rank(p.guildRank):''}};
+var GU=function(p){return {icon:icon(p['class'],1),name:esc(p.name),sub:esc(p['class']),value:rank(p.guildRank),extra:n(p.points)+' points'}};
+var DU=function(r){return {icon:'',name:party(r),sub:day(r.date),value:time(r.seconds),extra:grade(r.grade)}};
+
+function level(){var L=arr(D.level);
+  return ph('Highest level','Top 50 characters by level, then experience.')+podium(L,LV,'Be the highest-level character on Arvan to take <b>#1</b>.')+
+    table('<th class="r">#</th><th>Character</th><th class="cl">Class</th><th>Guild</th><th class="num">Level</th>',L.slice(3).map(function(p,i){
+      return '<tr><td class="r">'+esc(p.rank||i+4)+'</td><td class="nm">'+icon(p['class'])+esc(p.name)+'</td><td class="cl">'+esc(p['class'])+'</td><td>'+rank(p.guildRank)+'</td><td class="num">Lv '+esc(p.level)+'</td></tr>'}))}
+function guild(){var L=arr(D.guild);
+  return ph('Guild ranks','Top 50 by guild rank, then guild points.')+podium(L,GU,'Climb the guild ranks (E to S) on the Guild Job Board to take <b>#1</b>.')+
+    table('<th class="r">#</th><th>Character</th><th class="cl">Class</th><th>Rank</th><th class="num">Points</th>',L.slice(3).map(function(p,i){
+      return '<tr><td class="r">'+esc(p.rank||i+4)+'</td><td class="nm">'+icon(p['class'])+esc(p.name)+'</td><td class="cl">'+esc(p['class'])+'</td><td>'+rank(p.guildRank)+'</td><td class="num">'+n(p.points)+'</td></tr>'}))}
+
+function rec(id,m){var d=dmap()[id];return d?arr(d[m||'normal'])[0]:null}
+function champions(){var L=arr(D.level)[0],G=arr(D.guild)[0],F=arr(D.firsts).slice().sort(function(a,b){return String(b.date).localeCompare(String(a.date))})[0];
+  function cc(go,k,art,title,sub){return '<article class="cc'+(go?'':' ghost')+'"'+(go?' data-go="'+go+'"':'')+'>'+art+'<div class="cb"><div class="k">'+k+'</div><h3>'+title+'</h3><p>'+sub+'</p></div></article>'}
+  var h='<div class="champ">'+
+    (L?cc('level','Highest level',icon(L['class'],1),esc(L.name),'Lv '+esc(L.level)+' '+esc(L['class'])):cc('','Highest level','<span class="crest">?</span>','Unclaimed','Reach the highest level to take #1.'))+
+    (G?cc('guild','Top of the guild','<span class="crest">'+esc(G.guildRank||'?')+'</span>',esc(G.name),'Rank '+esc(G.guildRank)+' &middot; '+n(G.points)+' points'):cc('','Top of the guild','<span class="crest">?</span>','Unclaimed','Climb the Guild Job Board ranks to take #1.'))+
+    (F?cc('firsts','Latest server first','<span class="crest">&#10022;</span>',arr(F.names).map(esc).join(', '),esc(F.what)+' &middot; '+day(F.date)):cc('','Latest server first','<span class="crest">&#10022;</span>','Unclaimed','Every server first is still up for grabs.'))+
+    '</div><h3 class="sh">Dungeon records <small>Fastest normal clear in each dungeon</small></h3><div class="drec">';
+  Object.keys(dmap()).forEach(function(id){var m=dmeta(id),r=rec(id);
+    h+='<button class="dt" data-d="'+esc(id)+'" style="--dc:'+m.c+'"><span class="rn">'+(ROMAN[m.t]||'')+'</span><div class="tl">'+(m.t?'Tier '+m.t+' &middot; Lv '+m.lv:'Dungeon')+'</div><h4>'+esc(dname(id))+'</h4>'+
+      (r?'<div class="rec"><b>'+time(r.seconds)+'</b>'+grade(r.grade)+'</div><div class="who">'+party(r)+'</div>':'<div class="rec"><span class="open">Unclaimed</span></div><div class="who">Clear it to take #1</div>')+'</button>'});
+  return h+'</div>'}
+
+function dungeons(){var M=dmap(),ids=Object.keys(M);
+  if(!ids.length){q('#rail').innerHTML='';q('#dsel').innerHTML='';q('#dmain').innerHTML='<p class="how">No dungeons in this file yet.</p>';return}
+  if(ids.indexOf(dun)<0)dun=ids[0];
+  q('#rail').innerHTML=ids.map(function(id){var m=dmeta(id),r=rec(id,mode);
+    return '<button data-d="'+esc(id)+'" class="'+(id===dun?'on':'')+'" style="--dc:'+m.c+'"><span class="nm">'+esc(dname(id))+'</span><span class="lv">'+(m.t?'Tier '+m.t+' &middot; Lv '+m.lv:'')+'</span><span class="rt'+(r?'':' open')+'">'+(r?time(r.seconds):'Unclaimed')+'</span></button>'}).join('');
+  q('#dsel').innerHTML=ids.map(function(id){var r=rec(id,mode);return '<option value="'+esc(id)+'"'+(id===dun?' selected':'')+'>'+esc(dname(id))+' &mdash; '+(r?time(r.seconds):'Unclaimed')+'</option>'}).join('');
+  var m=dmeta(dun),L=arr(M[dun][mode]),nm=esc(dname(dun));
+  q('#dmain').innerHTML='<div class="dhead" style="--dc:'+m.c+'"><span class="rn">'+(ROMAN[m.t]||'')+'</span><div><div class="tl">'+(m.t?'Tier '+m.t+' &middot; Lv '+m.lv:'Dungeon')+'</div><h2>'+nm+'</h2><p>Fastest boss kills'+(mode==='master'?' on Master':'')+', top 10.</p></div>'+
+    '<div class="seg" role="group" aria-label="Mode"><button data-mode="normal" class="'+(mode==='normal'?'on':'')+'">Normal</button><button data-mode="master" class="'+(mode==='master'?'on':'')+'">Master</button></div></div>'+
+    podium(L,DU,'Clear <b>'+nm+'</b>'+(mode==='master'?' on Master':'')+' to take <b>#1</b>.')+
+    table('<th class="r">#</th><th>Party</th><th>Grade</th><th class="num">Time</th><th class="num dt2">Date</th>',L.slice(3).map(function(r,i){
+      return '<tr'+(r.grade==='S+'?' class="sp"':'')+'><td class="r">'+esc(r.rank||i+4)+'</td><td class="nm">'+party(r)+'</td><td>'+grade(r.grade)+'</td><td class="num">'+time(r.seconds)+'</td><td class="num dt2">'+day(r.date)+'</td></tr>'}))}
+
+function firsts(){var L=arr(D.firsts).slice().sort(function(a,b){return String(b.date).localeCompare(String(a.date))}),have={};
+  L.forEach(function(f){have[String(f.what).toLowerCase()]=1});
+  var open=[];Object.keys(dmap()).forEach(function(id){var nm=dname(id);['First clear: '+nm,'First S+: '+nm].forEach(function(w){if(!have[w.toLowerCase()])open.push(w)})});
+  RANKS.forEach(function(r){var w='First to guild rank '+r;if(!have[w.toLowerCase()])open.push(w)});
+  return ph('Server firsts','The first character or party to do it, forever on the record.')+
+    (L.length?'<div class="tline">'+L.map(function(f,i){return '<div class="fi'+(i===0?' latest':'')+'"><div><h4>'+esc(f.what)+'</h4><span class="nm">'+arr(f.names).map(esc).join(', ')+'</span></div><time>'+day(f.date)+'</time></div>'}).join('')+'</div>':'<p class="how" style="text-align:left">No server firsts yet. Every one below is still up for grabs.</p>')+
+    (open.length?'<h3 class="sh">Still up for grabs <small>'+open.length+' unclaimed</small></h3><div class="grab">'+open.map(function(w){return '<div>'+esc(w)+'</div>'}).join('')+'</div>':'')}
+
+function ago(){var e=q('#upd'),t=D&&Date.parse(D.updated);if(!t||isNaN(t)||!anyRows()){e.hidden=true;return}
   var m=Math.max(0,Math.round((Date.now()-t)/60000)),s=m<1?'just now':m<60?m+' min ago':m<2880?Math.round(m/60)+' h ago':Math.round(m/1440)+' days ago';
-  e.textContent='Updated '+s;e.classList.toggle('old',m>480);e.title=new Date(t).toUTCString()}
-function show(t){if(['level','dungeons','guild','firsts'].indexOf(t)<0)t='level';tab=t;
+  e.hidden=false;e.innerHTML='<i></i>Updated '+s;e.classList.toggle('old',m>480);e.title=new Date(t).toUTCString()}
+function show(t){var parts=String(t||'').split(':');t=parts[0];if(['champions','level','guild','dungeons','firsts'].indexOf(t)<0)t='champions';tab=t;
+  if(t==='dungeons'&&parts[1]){dun=parts[1];if(D)dungeons()}
   qa('[data-tab]').forEach(function(b){var on=b.getAttribute('data-tab')===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});
   qa('[data-pane]').forEach(function(p){p.classList.toggle('on',p.getAttribute('data-pane')===t)})}
-function draw(){q('[data-pane="level"]').innerHTML=level();q('[data-pane="guild"]').innerHTML=guild();q('[data-pane="firsts"]').innerHTML=firsts();dungeons();ago()}
+function go(t){show(t);history.replaceState(null,'','#'+t)}
+function draw(){q('[data-pane="champions"]').innerHTML=champions();q('[data-pane="level"]').innerHTML=level();q('[data-pane="guild"]').innerHTML=guild();q('[data-pane="firsts"]').innerHTML=firsts();dungeons();ago()}
 
-qa('[data-tab]').forEach(function(b){b.addEventListener('click',function(){show(b.getAttribute('data-tab'));history.replaceState(null,'','#'+tab)})});
-q('#dsel').addEventListener('click',function(e){var b=e.target.closest('[data-d]');if(b){dun=b.getAttribute('data-d');dungeons()}});
-q('#msel').addEventListener('click',function(e){var b=e.target.closest('[data-mode]');if(b){mode=b.getAttribute('data-mode');dungeons()}});
+qa('[data-tab]').forEach(function(b){b.addEventListener('click',function(){go(b.getAttribute('data-tab'))})});
+document.addEventListener('click',function(e){
+  var t=e.target.closest('.dt[data-d]');if(t){dun=t.getAttribute('data-d');mode='normal';dungeons();go('dungeons');scrollTo({top:q('.lbbar').getBoundingClientRect().top+scrollY-90,behavior:'smooth'});return}
+  var c=e.target.closest('.cc[data-go]');if(c){go(c.getAttribute('data-go'));return}
+  var r=e.target.closest('#rail [data-d]');if(r){dun=r.getAttribute('data-d');dungeons();return}
+  var m=e.target.closest('.seg [data-mode]');if(m){mode=m.getAttribute('data-mode');dungeons()}});
+q('#dsel').addEventListener('change',function(e){dun=e.target.value;dungeons()});
 show((location.hash||'').slice(1));
 window.addEventListener('hashchange',function(){show((location.hash||'').slice(1))});
 fetch('data/leaderboards.json?t='+Math.floor(Date.now()/300000),{cache:'no-cache'}).then(function(r){return r.ok?r.json():Promise.reject(r.status)}).then(function(j){D=j||{};draw();setInterval(ago,60000)})
-  .catch(function(){q('#upd').textContent='The leaderboards could not load. Try again in a minute.';qa('[data-pane]').forEach(function(p){if(p.getAttribute('data-pane')!=='dungeons')p.innerHTML=''})});
+  .catch(function(){q('[data-pane="champions"]').innerHTML='<p class="how">The leaderboards could not load. Try again in a minute.</p>';show('champions')});
 })();
 </script>
 </body>
