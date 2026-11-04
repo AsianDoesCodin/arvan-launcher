@@ -139,9 +139,17 @@
 .grab{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
 .grab div{display:flex;gap:11px;align-items:center;padding:12px 14px;border-radius:10px;border:1px solid rgba(35,65,63,.75);background:rgba(11,29,33,.45);color:#c7d8d0;font-size:.88rem}
 .grab div:before{content:"";width:8px;height:8px;flex:none;transform:rotate(45deg);border:1.5px solid var(--gold2)}
+/* records: board header with the segmented toggle; 4-up record holder cards */
+.rhead{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap;margin:0 0 40px}
+.rhead .ph{margin:0}
+.rhead .seg{max-width:100%;overflow-x:auto;scrollbar-width:none}.rhead .seg button{white-space:nowrap;flex:none}.rhead .seg::-webkit-scrollbar{display:none}
+.champ.four{grid-template-columns:repeat(4,1fr)}
+.champ.four .cc{padding:18px;gap:13px}.champ.four .cc .crest{width:52px;height:52px;font-size:1.25rem}.champ.four .cc h3{font-size:1.1rem}
+.lbt .det{color:#c7d8d0}
 .lbnote{text-align:center;color:var(--mute);font-size:.8rem;margin:46px 0 0}
 @media (max-width:900px){
   .champ{grid-template-columns:1fr}
+  .champ.four{grid-template-columns:repeat(2,1fr)}
   .dwrap{grid-template-columns:minmax(0,1fr)}
   .rail{display:none}.dsel{display:block}
 }
@@ -163,6 +171,9 @@
   .lbt .cl,.lbt .dt2{display:none}
   .dhead{padding:22px 18px 18px}.dhead .rn{font-size:4.5rem}
   .cc{padding:16px}
+  .champ.four{grid-template-columns:1fr}
+  .rhead{margin-bottom:28px}
+  .lbt .det{display:none}
 }
 </style>
 </head>
@@ -178,12 +189,12 @@
 
 <header class="hero small">
   <div class="stage"><img src="media/head-world.jpg?v=20261021i" alt=""></div>
-  <div class="wrap"><div class="in"><span class="eyebrow">Leaderboards</span><h1 class="shimmer">Hall of Heroes</h1><p>The highest levels, the fastest dungeon clears, the top guild ranks and every server first on Arvan.</p></div></div>
+  <div class="wrap"><div class="in"><span class="eyebrow">Leaderboards</span><h1 class="shimmer">Hall of Heroes</h1><p>The highest levels, the fastest dungeon clears, the top guild ranks, the great hunts and every server first on Arvan.</p></div></div>
 </header>
 
 <section style="padding-top:40px"><div class="wrap lbx">
   <div class="lbbar">
-    <div class="lbtabs" role="tablist"><button class="tab on" data-tab="champions" role="tab">Hall of Champions</button><button class="tab" data-tab="level" role="tab">Level</button><button class="tab" data-tab="guild" role="tab">Guild</button><button class="tab" data-tab="dungeons" role="tab">Dungeons</button><button class="tab" data-tab="firsts" role="tab">Server firsts</button></div>
+    <div class="lbtabs" role="tablist"><button class="tab on" data-tab="champions" role="tab">Hall of Champions</button><button class="tab" data-tab="level" role="tab">Level</button><button class="tab" data-tab="guild" role="tab">Guild</button><button class="tab" data-tab="dungeons" role="tab">Dungeons</button><button class="tab" data-tab="records" role="tab">Records</button><button class="tab" data-tab="firsts" role="tab">Server firsts</button></div>
     <div class="upd" id="upd" hidden></div>
   </div>
 
@@ -193,6 +204,7 @@
   <div data-pane="dungeons">
     <div class="dwrap"><nav class="rail" id="rail" aria-label="Dungeons"></nav><div><select class="dsel" id="dsel" aria-label="Dungeon"></select><div id="dmain"></div></div></div>
   </div>
+  <div data-pane="records"></div>
   <div data-pane="firsts"></div>
   <p class="lbnote">Updated every hour from the live server. Characters only; staff test characters are left out.</p>
 </div></section>
@@ -231,7 +243,7 @@ function dmap(){return D&&D.dungeons&&typeof D.dungeons==='object'&&!Array.isArr
 function dmeta(id){return DG[id]||{t:0,lv:'',c:'63,224,168'}}
 function dname(id){var d=dmap()[id];return (d&&d.name)||id}
 function party(r){return arr(r.players).map(esc).join(', ')}
-function anyRows(){if(arr(D.level).length||arr(D.guild).length||arr(D.firsts).length)return true;var M=dmap();return Object.keys(M).some(function(k){return arr(M[k].normal).length||arr(M[k].master).length})}
+function anyRows(){if(arr(D.level).length||arr(D.guild).length||arr(D.firsts).length||RB.some(function(b){return arr(D[b.k]).length}))return true;var M=dmap();return Object.keys(M).some(function(k){return arr(M[k].normal).length||arr(M[k].master).length})}
 
 /* podium: 3 cards, ghosts for open spots */
 function podium(L,stat,how){var h='<div class="podium">';
@@ -244,6 +256,15 @@ function ph(t,p){return '<div class="ph"><h2>'+t+'</h2><p>'+p+'</p></div>'}
 
 var LV=function(p){return {icon:icon(p['class'],1),name:esc(p.name),sub:esc(p['class']),value:'Lv '+esc(p.level),extra:p.guildRank?'Guild rank '+rank(p.guildRank):''}};
 var GU=function(p){return {icon:icon(p['class'],1),name:esc(p.name),sub:esc(p['class']),value:rank(p.guildRank),extra:n(p.points)+' points'}};
+// record boards (Worker 1's export, top 50 each): key, title, blurb, empty-state call to action, value column, value, optional detail
+function size(r){var v=Number(r.size);return isNaN(v)?esc(r.size):(Math.round(v*10)/10).toLocaleString('en-US')+(r.unit?' '+esc(r.unit):'')}
+var RB=[
+  {k:'monsterKills',tab:'Monster kills',t:'Monster kills',p:'Top 50 characters by monsters slain.',how:'Slay monsters anywhere in Arvan to take <b>#1</b>.',col:'Kills',u:' kills',v:function(r){return n(r.kills)},crest:'&#9876;'},
+  {k:'bossKills',tab:'Boss kills',t:'Boss kills',p:'Top 50 characters by bosses slain.',how:'Bring down world and dungeon bosses to take <b>#1</b>.',col:'Bosses',u:' bosses',v:function(r){return n(r.kills)},crest:'&#9813;'},
+  {k:'bossHit',tab:'Biggest boss hit',t:'Biggest boss hit',p:'The hardest single hit ever landed on a boss.',how:'Land the hardest hit on a boss to take <b>#1</b>.',col:'Damage',u:' damage',v:function(r){return n(r.damage)},d:'boss',dh:'Boss',crest:'&#10040;'},
+  {k:'fish',tab:'Biggest fish',t:'Biggest fish',p:'The biggest catch ever landed on Arvan.',how:'Cast a line anywhere in Arvan and land the biggest catch to take <b>#1</b>.',col:'Size',v:size,d:'fish',dh:'Catch',crest:'&#10047;'}];
+var rbk=RB[0].k;
+function rb(k){for(var i=0;i<RB.length;i++)if(RB[i].k===k)return RB[i];return RB[0]}
 var DU=function(r){return {icon:'',name:party(r),sub:day(r.date),value:time(r.seconds),extra:grade(r.grade)}};
 
 function level(){var L=arr(D.level);
@@ -255,6 +276,13 @@ function guild(){var L=arr(D.guild);
     table('<th class="r">#</th><th>Character</th><th class="cl">Class</th><th>Rank</th><th class="num">Points</th>',L.slice(3).map(function(p,i){
       return '<tr><td class="r">'+esc(p.rank||i+4)+'</td><td class="nm">'+icon(p['class'])+esc(p.name)+'</td><td class="cl">'+esc(p['class'])+'</td><td>'+rank(p.guildRank)+'</td><td class="num">'+n(p.points)+'</td></tr>'}))}
 
+function records(){var B=rb(rbk),L=arr(D[B.k]),hasD=B.d&&L.some(function(r){return r[B.d]}),hasT=L.some(function(r){return r.date});
+  var RS=function(r){return {icon:icon(r['class'],1),name:esc(r.name),sub:esc(r['class'])+(B.d&&r[B.d]?' &middot; '+esc(r[B.d]):''),value:B.v(r),extra:r.date?day(r.date):''}};
+  return '<div class="rhead">'+ph(B.t,B.p)+'<div class="seg" role="group" aria-label="Board">'+RB.map(function(b){return '<button data-rb="'+b.k+'" class="'+(b.k===B.k?'on':'')+'">'+b.tab+'</button>'}).join('')+'</div></div>'+
+    podium(L,RS,B.how)+
+    table('<th class="r">#</th><th>Character</th><th class="cl">Class</th>'+(hasD?'<th class="det">'+B.dh+'</th>':'')+'<th class="num">'+B.col+'</th>'+(hasT?'<th class="num dt2">Date</th>':''),L.slice(3).map(function(r,i){
+      return '<tr><td class="r">'+esc(r.rank||i+4)+'</td><td class="nm">'+icon(r['class'])+esc(r.name)+'</td><td class="cl">'+esc(r['class'])+'</td>'+(hasD?'<td class="det">'+esc(r[B.d]||'')+'</td>':'')+'<td class="num">'+B.v(r)+'</td>'+(hasT?'<td class="num dt2">'+(r.date?day(r.date):'')+'</td>':'')+'</tr>'}))}
+function drawRecords(){q('[data-pane="records"]').innerHTML=records();var g=q('.rhead .seg'),o=g&&g.querySelector('.on');if(o)g.scrollLeft=o.offsetLeft-(g.clientWidth-o.offsetWidth)/2}
 function rec(id,m){var d=dmap()[id];return d?arr(d[m||'normal'])[0]:null}
 function champions(){var L=arr(D.level)[0],G=arr(D.guild)[0],F=arr(D.firsts).slice().sort(function(a,b){return String(b.date).localeCompare(String(a.date))})[0];
   function cc(go,k,art,title,sub){return '<article class="cc'+(go?'':' ghost')+'"'+(go?' data-go="'+go+'"':'')+'>'+art+'<div class="cb"><div class="k">'+k+'</div><h3>'+title+'</h3><p>'+sub+'</p></div></article>'}
@@ -262,6 +290,8 @@ function champions(){var L=arr(D.level)[0],G=arr(D.guild)[0],F=arr(D.firsts).sli
     (L?cc('level','Highest level',icon(L['class'],1),esc(L.name),'Lv '+esc(L.level)+' '+esc(L['class'])):cc('','Highest level','<span class="crest">?</span>','Unclaimed','Reach the highest level to take #1.'))+
     (G?cc('guild','Top of the guild','<span class="crest">'+esc(G.guildRank||'?')+'</span>',esc(G.name),'Rank '+esc(G.guildRank)+' &middot; '+n(G.points)+' points'):cc('','Top of the guild','<span class="crest">?</span>','Unclaimed','Climb the Guild Job Board ranks to take #1.'))+
     (F?cc('firsts','Latest server first','<span class="crest">&#10022;</span>',arr(F.names).map(esc).join(', '),esc(F.what)+' &middot; '+day(F.date)):cc('','Latest server first','<span class="crest">&#10022;</span>','Unclaimed','Every server first is still up for grabs.'))+
+    '</div><h3 class="sh">Record holders <small>Kills, the biggest boss hit and the biggest catch</small></h3><div class="champ four">'+
+    RB.map(function(B){var r=arr(D[B.k])[0];return r?cc('records:'+B.k,B.t,icon(r['class'],1),esc(r.name),B.v(r)+(B.u||'')+(B.d&&r[B.d]?' &middot; '+esc(r[B.d]):'')):cc('',B.t,'<span class="crest">'+B.crest+'</span>','Unclaimed',B.how.replace(/<\/?b>/g,''))}).join('')+
     '</div><h3 class="sh">Dungeon records <small>Fastest normal clear in each dungeon</small></h3><div class="drec">';
   Object.keys(dmap()).forEach(function(id){var m=dmeta(id),r=rec(id);
     h+='<button class="dt" data-d="'+esc(id)+'" style="--dc:'+m.c+'"><span class="rn">'+(ROMAN[m.t]||'')+'</span><div class="tl">'+(m.t?'Tier '+m.t+' &middot; Lv '+m.lv:'Dungeon')+'</div><h4>'+esc(dname(id))+'</h4>'+
@@ -292,18 +322,20 @@ function firsts(){var L=arr(D.firsts).slice().sort(function(a,b){return String(b
 function ago(){var e=q('#upd'),t=D&&Date.parse(D.updated);if(!t||isNaN(t)||!anyRows()){e.hidden=true;return}
   var m=Math.max(0,Math.round((Date.now()-t)/60000)),s=m<1?'just now':m<60?m+' min ago':m<2880?Math.round(m/60)+' h ago':Math.round(m/1440)+' days ago';
   e.hidden=false;e.innerHTML='<i></i>Updated '+s;e.classList.toggle('old',m>480);e.title=new Date(t).toUTCString()}
-function show(t){var parts=String(t||'').split(':');t=parts[0];if(['champions','level','guild','dungeons','firsts'].indexOf(t)<0)t='champions';tab=t;
+function show(t){var parts=String(t||'').split(':');t=parts[0];if(['champions','level','guild','dungeons','records','firsts'].indexOf(t)<0)t='champions';tab=t;
   if(t==='dungeons'&&parts[1]){dun=parts[1];if(D)dungeons()}
+  if(t==='records'&&parts[1]){rbk=rb(parts[1]).k;if(D)drawRecords()}
   qa('[data-tab]').forEach(function(b){var on=b.getAttribute('data-tab')===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});
   qa('[data-pane]').forEach(function(p){p.classList.toggle('on',p.getAttribute('data-pane')===t)})}
 function go(t){show(t);history.replaceState(null,'','#'+t)}
-function draw(){q('[data-pane="champions"]').innerHTML=champions();q('[data-pane="level"]').innerHTML=level();q('[data-pane="guild"]').innerHTML=guild();q('[data-pane="firsts"]').innerHTML=firsts();dungeons();ago()}
+function draw(){q('[data-pane="champions"]').innerHTML=champions();q('[data-pane="level"]').innerHTML=level();q('[data-pane="guild"]').innerHTML=guild();drawRecords();q('[data-pane="firsts"]').innerHTML=firsts();dungeons();ago()}
 
 qa('[data-tab]').forEach(function(b){b.addEventListener('click',function(){go(b.getAttribute('data-tab'))})});
 document.addEventListener('click',function(e){
   var t=e.target.closest('.dt[data-d]');if(t){dun=t.getAttribute('data-d');mode='normal';dungeons();go('dungeons');scrollTo({top:q('.lbbar').getBoundingClientRect().top+scrollY-90,behavior:'smooth'});return}
   var c=e.target.closest('.cc[data-go]');if(c){go(c.getAttribute('data-go'));return}
   var r=e.target.closest('#rail [data-d]');if(r){dun=r.getAttribute('data-d');dungeons();return}
+  var b=e.target.closest('.seg [data-rb]');if(b){rbk=b.getAttribute('data-rb');drawRecords();history.replaceState(null,'','#records:'+rbk);return}
   var m=e.target.closest('.seg [data-mode]');if(m){mode=m.getAttribute('data-mode');dungeons()}});
 q('#dsel').addEventListener('change',function(e){dun=e.target.value;dungeons()});
 show((location.hash||'').slice(1));
