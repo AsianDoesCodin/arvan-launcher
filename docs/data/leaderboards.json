@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-03T20:57:54Z",
+ "updated": "2026-11-03T22:08:38Z",
  "level": [
   {
    "rank": 1,
@@ -35,7 +35,17 @@
  "dungeons": {
   "goblin_warren": {
    "name": "Goblin Warren",
-   "normal": [],
+   "normal": [
+    {
+     "rank": 1,
+     "seconds": 483,
+     "grade": "S+",
+     "players": [
+      "AsianDoesMC"
+     ],
+     "date": "2026-11-03"
+    }
+   ],
    "master": []
   },
   "orc_hold": {
