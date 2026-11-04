@@ -146,6 +146,8 @@
 .champ.four{grid-template-columns:repeat(4,1fr)}
 .champ.four .cc{padding:18px;gap:13px}.champ.four .cc .crest{width:52px;height:52px;font-size:1.25rem}.champ.four .cc h3{font-size:1.1rem}
 .lbt .det{color:#c7d8d0}
+.rar{display:inline-block;font:700 .72rem Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--rc);padding:3px 9px;border-radius:999px;border:1px solid var(--rc);background:rgba(0,0,0,.25)}
+.pd .pv .rar{font-size:.85rem}
 .lbnote{text-align:center;color:var(--mute);font-size:.8rem;margin:46px 0 0}
 @media (max-width:900px){
   .champ{grid-template-columns:1fr}
@@ -257,12 +259,13 @@ function ph(t,p){return '<div class="ph"><h2>'+t+'</h2><p>'+p+'</p></div>'}
 var LV=function(p){return {icon:icon(p['class'],1),name:esc(p.name),sub:esc(p['class']),value:'Lv '+esc(p.level),extra:p.guildRank?'Guild rank '+rank(p.guildRank):''}};
 var GU=function(p){return {icon:icon(p['class'],1),name:esc(p.name),sub:esc(p['class']),value:rank(p.guildRank),extra:n(p.points)+' points'}};
 // record boards (Worker 1's export, top 50 each): key, title, blurb, empty-state call to action, value column, value, optional detail
-function size(r){var v=Number(r.size);return isNaN(v)?esc(r.size):(Math.round(v*10)/10).toLocaleString('en-US')+(r.unit?' '+esc(r.unit):'')}
+var RAR={common:'#b9c7c1',uncommon:'#6fd17a',rare:'#5aa8ff',epic:'#c07cff',legendary:'#f2b544'};
+function rarity(r){var k=String(r.rarity||'');return '<span class="rar" style="--rc:'+(RAR[k.toLowerCase()]||'#b9c7c1')+'">'+esc(k||'-')+'</span>'}
 var RB=[
   {k:'monsterKills',tab:'Monster kills',t:'Monster kills',p:'Top 50 characters by monsters slain.',how:'Slay monsters anywhere in Arvan to take <b>#1</b>.',col:'Kills',u:' kills',v:function(r){return n(r.kills)},crest:'&#9876;'},
-  {k:'bossKills',tab:'Boss kills',t:'Boss kills',p:'Top 50 characters by bosses slain.',how:'Bring down world and dungeon bosses to take <b>#1</b>.',col:'Bosses',u:' bosses',v:function(r){return n(r.kills)},crest:'&#9813;'},
-  {k:'bossHit',tab:'Biggest boss hit',t:'Biggest boss hit',p:'The hardest single hit ever landed on a boss.',how:'Land the hardest hit on a boss to take <b>#1</b>.',col:'Damage',u:' damage',v:function(r){return n(r.damage)},d:'boss',dh:'Boss',crest:'&#10040;'},
-  {k:'fish',tab:'Biggest fish',t:'Biggest fish',p:'The biggest catch ever landed on Arvan.',how:'Cast a line anywhere in Arvan and land the biggest catch to take <b>#1</b>.',col:'Size',v:size,d:'fish',dh:'Catch',crest:'&#10047;'}];
+  {k:'bossKills',tab:'Boss kills',t:'Boss kills',p:'Top 50 by bosses slain: dungeon bosses count for the whole party, world bosses for the killer.',how:'Bring down world and dungeon bosses to take <b>#1</b>.',col:'Bosses',u:' bosses',v:function(r){return n(r.kills)},crest:'&#9813;'},
+  {k:'bossHit',tab:'Biggest boss hit',t:'Biggest boss hit',p:'The hardest single hit landed on a boss in a real fight.',how:'Land the hardest hit on a boss to take <b>#1</b>.',col:'Damage',u:' damage',v:function(r){return n(r.damage)},d:'boss',dh:'Boss',crest:'&#10040;'},
+  {k:'fish',tab:'Biggest fish',t:'Biggest fish',p:'The rarest, most valuable catches landed on Arvan.',how:'Cast a line anywhere in Arvan and land the biggest catch to take <b>#1</b>.',col:'Rarity',v:rarity,d:'fish',dh:'Catch',crest:'&#10047;'}];
 var rbk=RB[0].k;
 function rb(k){for(var i=0;i<RB.length;i++)if(RB[i].k===k)return RB[i];return RB[0]}
 var DU=function(r){return {icon:'',name:party(r),sub:day(r.date),value:time(r.seconds),extra:grade(r.grade)}};
@@ -276,12 +279,12 @@ function guild(){var L=arr(D.guild);
     table('<th class="r">#</th><th>Character</th><th class="cl">Class</th><th>Rank</th><th class="num">Points</th>',L.slice(3).map(function(p,i){
       return '<tr><td class="r">'+esc(p.rank||i+4)+'</td><td class="nm">'+icon(p['class'])+esc(p.name)+'</td><td class="cl">'+esc(p['class'])+'</td><td>'+rank(p.guildRank)+'</td><td class="num">'+n(p.points)+'</td></tr>'}))}
 
-function records(){var B=rb(rbk),L=arr(D[B.k]),hasD=B.d&&L.some(function(r){return r[B.d]}),hasT=L.some(function(r){return r.date});
-  var RS=function(r){return {icon:icon(r['class'],1),name:esc(r.name),sub:esc(r['class'])+(B.d&&r[B.d]?' &middot; '+esc(r[B.d]):''),value:B.v(r),extra:r.date?day(r.date):''}};
+function records(){var B=rb(rbk),L=arr(D[B.k]),hasC=L.some(function(r){return r['class']}),hasD=B.d&&L.some(function(r){return r[B.d]}),hasT=L.some(function(r){return r.date});
+  var RS=function(r){return {icon:icon(r['class'],1),name:esc(r.name),sub:[r['class'],B.d&&r[B.d]].filter(Boolean).map(esc).join(' &middot; '),value:B.v(r),extra:r.date?day(r.date):''}};
   return '<div class="rhead">'+ph(B.t,B.p)+'<div class="seg" role="group" aria-label="Board">'+RB.map(function(b){return '<button data-rb="'+b.k+'" class="'+(b.k===B.k?'on':'')+'">'+b.tab+'</button>'}).join('')+'</div></div>'+
     podium(L,RS,B.how)+
-    table('<th class="r">#</th><th>Character</th><th class="cl">Class</th>'+(hasD?'<th class="det">'+B.dh+'</th>':'')+'<th class="num">'+B.col+'</th>'+(hasT?'<th class="num dt2">Date</th>':''),L.slice(3).map(function(r,i){
-      return '<tr><td class="r">'+esc(r.rank||i+4)+'</td><td class="nm">'+icon(r['class'])+esc(r.name)+'</td><td class="cl">'+esc(r['class'])+'</td>'+(hasD?'<td class="det">'+esc(r[B.d]||'')+'</td>':'')+'<td class="num">'+B.v(r)+'</td>'+(hasT?'<td class="num dt2">'+(r.date?day(r.date):'')+'</td>':'')+'</tr>'}))}
+    table('<th class="r">#</th><th>Character</th>'+(hasC?'<th class="cl">Class</th>':'')+(hasD?'<th class="det">'+B.dh+'</th>':'')+'<th class="num">'+B.col+'</th>'+(hasT?'<th class="num dt2">Date</th>':''),L.slice(3).map(function(r,i){
+      return '<tr><td class="r">'+esc(r.rank||i+4)+'</td><td class="nm">'+icon(r['class'])+esc(r.name)+'</td>'+(hasC?'<td class="cl">'+esc(r['class'])+'</td>':'')+(hasD?'<td class="det">'+esc(r[B.d]||'')+'</td>':'')+'<td class="num">'+B.v(r)+'</td>'+(hasT?'<td class="num dt2">'+(r.date?day(r.date):'')+'</td>':'')+'</tr>'}))}
 function drawRecords(){q('[data-pane="records"]').innerHTML=records();var g=q('.rhead .seg'),o=g&&g.querySelector('.on');if(o)g.scrollLeft=o.offsetLeft-(g.clientWidth-o.offsetWidth)/2}
 function rec(id,m){var d=dmap()[id];return d?arr(d[m||'normal'])[0]:null}
 function champions(){var L=arr(D.level)[0],G=arr(D.guild)[0],F=arr(D.firsts).slice().sort(function(a,b){return String(b.date).localeCompare(String(a.date))})[0];
