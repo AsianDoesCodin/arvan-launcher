@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-03T22:08:38Z",
+ "updated": "2026-11-04T15:10:29Z",
  "level": [
   {
    "rank": 1,
@@ -157,5 +157,9 @@
    ],
    "date": "2026-11-03"
   }
- ]
+ ],
+ "monsterKills": [],
+ "bossKills": [],
+ "bossHit": [],
+ "fish": []
 }
