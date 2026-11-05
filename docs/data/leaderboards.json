@@ -1,22 +1,29 @@
 {
- "updated": "2026-11-05T13:12:49Z",
+ "updated": "2026-11-05T22:04:28Z",
  "level": [
   {
    "rank": 1,
    "name": "muz",
    "class": "Duelist",
-   "level": 138,
+   "level": 139,
    "guildRank": "B"
   },
   {
    "rank": 2,
+   "name": "Junatan",
+   "class": "Reaver",
+   "level": 120,
+   "guildRank": "C"
+  },
+  {
+   "rank": 3,
    "name": "AsianDoesMC",
    "class": "Ice Mage",
    "level": 117,
    "guildRank": "D"
   },
   {
-   "rank": 3,
+   "rank": 4,
    "name": "sowilouu",
    "class": "Reaver",
    "level": 30,
@@ -29,14 +36,21 @@
    "name": "muz",
    "class": "Duelist",
    "guildRank": "B",
-   "points": 969
+   "points": 1069
   },
   {
    "rank": 2,
+   "name": "Junatan",
+   "class": "Reaver",
+   "guildRank": "C",
+   "points": 0
+  },
+  {
+   "rank": 3,
    "name": "AsianDoesMC",
    "class": "Ice Mage",
    "guildRank": "D",
-   "points": 460
+   "points": 468
   }
  ],
  "dungeons": {
@@ -45,6 +59,15 @@
    "normal": [
     {
      "rank": 1,
+     "seconds": 294,
+     "grade": "S",
+     "players": [
+      "Junatan"
+     ],
+     "date": "2026-11-05"
+    },
+    {
+     "rank": 2,
      "seconds": 483,
      "grade": "S+",
      "players": [
@@ -67,8 +90,28 @@
   },
   "orc_hold": {
    "name": "Orc Warlord's Hold",
-   "normal": [],
-   "master": []
+   "normal": [
+    {
+     "rank": 1,
+     "seconds": 160,
+     "grade": "S+",
+     "players": [
+      "muz"
+     ],
+     "date": "2026-11-05"
+    }
+   ],
+   "master": [
+    {
+     "rank": 1,
+     "seconds": 391,
+     "grade": "S",
+     "players": [
+      "AsianDoesMC"
+     ],
+     "date": "2026-11-05"
+    }
+   ]
   },
   "creepy_mansion": {
    "name": "Creepy Mansion",
@@ -194,13 +237,25 @@
    "rank": 1,
    "name": "muz",
    "class": "Duelist",
-   "kills": 260
+   "kills": 751
   },
   {
    "rank": 2,
    "name": "sowilouu",
    "class": "Reaver",
    "kills": 151
+  },
+  {
+   "rank": 3,
+   "name": "AsianDoesMC",
+   "class": "Ice Mage",
+   "kills": 82
+  },
+  {
+   "rank": 4,
+   "name": "Junatan",
+   "class": "Reaver",
+   "kills": 37
   }
  ],
  "bossKills": [
@@ -208,7 +263,19 @@
    "rank": 1,
    "name": "muz",
    "class": "Duelist",
-   "kills": 4
+   "kills": 7
+  },
+  {
+   "rank": 2,
+   "name": "AsianDoesMC",
+   "class": "Ice Mage",
+   "kills": 2
+  },
+  {
+   "rank": 3,
+   "name": "Junatan",
+   "class": "Reaver",
+   "kills": 1
   }
  ],
  "bossHit": [
@@ -216,12 +283,28 @@
    "rank": 1,
    "name": "muz",
    "class": "Duelist",
-   "damage": 330568,
-   "boss": "Harvest Beast",
+   "damage": 457699,
+   "boss": "Gorzug Ironjaw",
    "date": "2026-11-05"
   },
   {
    "rank": 2,
+   "name": "AsianDoesMC",
+   "class": "Ice Mage",
+   "damage": 62342,
+   "boss": "Gorzug Ironjaw",
+   "date": "2026-11-05"
+  },
+  {
+   "rank": 3,
+   "name": "Junatan",
+   "class": "Reaver",
+   "damage": 14838,
+   "boss": "Grubnak the Gilded",
+   "date": "2026-11-05"
+  },
+  {
+   "rank": 4,
    "name": "sowilouu",
    "class": "Reaver",
    "damage": 116,
