@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-04T15:10:29Z",
+ "updated": "2026-11-05T06:32:32Z",
  "level": [
   {
    "rank": 1,
@@ -14,6 +14,13 @@
    "class": "Ice Mage",
    "level": 117,
    "guildRank": "D"
+  },
+  {
+   "rank": 3,
+   "name": "sowilouu",
+   "class": "Reaver",
+   "level": 28,
+   "guildRank": ""
   }
  ],
  "guild": [
@@ -158,7 +165,14 @@
    "date": "2026-11-03"
   }
  ],
- "monsterKills": [],
+ "monsterKills": [
+  {
+   "rank": 1,
+   "name": "sowilouu",
+   "class": "Reaver",
+   "kills": 103
+  }
+ ],
  "bossKills": [],
  "bossHit": [],
  "fish": []
