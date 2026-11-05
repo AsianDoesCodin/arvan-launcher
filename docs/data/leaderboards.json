@@ -1,11 +1,11 @@
 {
- "updated": "2026-11-05T06:32:32Z",
+ "updated": "2026-11-05T13:12:49Z",
  "level": [
   {
    "rank": 1,
    "name": "muz",
    "class": "Duelist",
-   "level": 136,
+   "level": 138,
    "guildRank": "B"
   },
   {
@@ -19,7 +19,7 @@
    "rank": 3,
    "name": "sowilouu",
    "class": "Reaver",
-   "level": 28,
+   "level": 30,
    "guildRank": ""
   }
  ],
@@ -29,7 +29,7 @@
    "name": "muz",
    "class": "Duelist",
    "guildRank": "B",
-   "points": 759
+   "points": 969
   },
   {
    "rank": 2,
@@ -53,7 +53,17 @@
      "date": "2026-11-03"
     }
    ],
-   "master": []
+   "master": [
+    {
+     "rank": 1,
+     "seconds": 242,
+     "grade": "S+",
+     "players": [
+      "muz"
+     ],
+     "date": "2026-11-05"
+    }
+   ]
   },
   "orc_hold": {
    "name": "Orc Warlord's Hold",
@@ -163,17 +173,61 @@
     "muz"
    ],
    "date": "2026-11-03"
+  },
+  {
+   "what": "First clear: Goblin Warren (Master)",
+   "names": [
+    "muz"
+   ],
+   "date": "2026-11-05"
+  },
+  {
+   "what": "First S+: Goblin Warren (Master)",
+   "names": [
+    "muz"
+   ],
+   "date": "2026-11-05"
   }
  ],
  "monsterKills": [
   {
    "rank": 1,
+   "name": "muz",
+   "class": "Duelist",
+   "kills": 260
+  },
+  {
+   "rank": 2,
    "name": "sowilouu",
    "class": "Reaver",
-   "kills": 103
+   "kills": 151
   }
  ],
- "bossKills": [],
- "bossHit": [],
+ "bossKills": [
+  {
+   "rank": 1,
+   "name": "muz",
+   "class": "Duelist",
+   "kills": 4
+  }
+ ],
+ "bossHit": [
+  {
+   "rank": 1,
+   "name": "muz",
+   "class": "Duelist",
+   "damage": 330568,
+   "boss": "Harvest Beast",
+   "date": "2026-11-05"
+  },
+  {
+   "rank": 2,
+   "name": "sowilouu",
+   "class": "Reaver",
+   "damage": 116,
+   "boss": "Lion Monk",
+   "date": "2026-11-05"
+  }
+ ],
  "fish": []
 }
