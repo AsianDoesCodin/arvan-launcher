@@ -1,11 +1,11 @@
 {
- "updated": "2026-11-06T02:24:28Z",
+ "updated": "2026-11-06T05:32:13Z",
  "level": [
   {
    "rank": 1,
    "name": "muz",
    "class": "Duelist",
-   "level": 139,
+   "level": 144,
    "guildRank": "B"
   },
   {
@@ -36,7 +36,7 @@
    "name": "muz",
    "class": "Duelist",
    "guildRank": "B",
-   "points": 1069
+   "points": 1542
   },
   {
    "rank": 2,
@@ -59,6 +59,15 @@
    "normal": [
     {
      "rank": 1,
+     "seconds": 231,
+     "grade": "S+",
+     "players": [
+      "muz"
+     ],
+     "date": "2026-11-06"
+    },
+    {
+     "rank": 2,
      "seconds": 294,
      "grade": "S",
      "players": [
@@ -67,7 +76,7 @@
      "date": "2026-11-05"
     },
     {
-     "rank": 2,
+     "rank": 3,
      "seconds": 483,
      "grade": "S+",
      "players": [
@@ -115,12 +124,32 @@
   },
   "creepy_mansion": {
    "name": "Creepy Mansion",
-   "normal": [],
+   "normal": [
+    {
+     "rank": 1,
+     "seconds": 113,
+     "grade": "S",
+     "players": [
+      "muz"
+     ],
+     "date": "2026-11-06"
+    }
+   ],
    "master": []
   },
   "monster_pyramid": {
    "name": "Monster Pyramid",
-   "normal": [],
+   "normal": [
+    {
+     "rank": 1,
+     "seconds": 290,
+     "grade": "S",
+     "players": [
+      "muz"
+     ],
+     "date": "2026-11-06"
+    }
+   ],
    "master": []
   },
   "corrupted_monastery": {
@@ -230,6 +259,13 @@
     "muz"
    ],
    "date": "2026-11-05"
+  },
+  {
+   "what": "First clear: Monster Pyramid",
+   "names": [
+    "muz"
+   ],
+   "date": "2026-11-06"
   }
  ],
  "monsterKills": [
@@ -237,7 +273,7 @@
    "rank": 1,
    "name": "muz",
    "class": "Duelist",
-   "kills": 994
+   "kills": 1691
   },
   {
    "rank": 2,
@@ -263,7 +299,7 @@
    "rank": 1,
    "name": "muz",
    "class": "Duelist",
-   "kills": 7
+   "kills": 17
   },
   {
    "rank": 2,
