@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-06T05:32:13Z",
+ "updated": "2026-11-06T15:38:13Z",
  "level": [
   {
    "rank": 1,
@@ -150,7 +150,17 @@
      "date": "2026-11-06"
     }
    ],
-   "master": []
+   "master": [
+    {
+     "rank": 1,
+     "seconds": 359,
+     "grade": "S",
+     "players": [
+      "muz"
+     ],
+     "date": "2026-11-06"
+    }
+   ]
   },
   "corrupted_monastery": {
    "name": "Corrupted Monastery",
@@ -273,7 +283,7 @@
    "rank": 1,
    "name": "muz",
    "class": "Duelist",
-   "kills": 1691
+   "kills": 1696
   },
   {
    "rank": 2,
@@ -299,7 +309,7 @@
    "rank": 1,
    "name": "muz",
    "class": "Duelist",
-   "kills": 17
+   "kills": 18
   },
   {
    "rank": 2,
@@ -319,9 +329,9 @@
    "rank": 1,
    "name": "muz",
    "class": "Duelist",
-   "damage": 457699,
-   "boss": "Gorzug Ironjaw",
-   "date": "2026-11-05"
+   "damage": 2067821,
+   "boss": "Heartroot Colossus",
+   "date": "2026-11-06"
   },
   {
    "rank": 2,
